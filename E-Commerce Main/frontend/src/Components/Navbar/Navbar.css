@@ -1,0 +1,161 @@
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  padding: 0px;
+  height: 130px;
+  box-shadow: 0 1px 3px -2px black;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo img {
+  height: 90px;
+  width: 90px;
+  border-radius: 75px;
+}
+
+.nav-logo p {
+  color: black;
+  font-size: 38px;
+  font-weight: 600;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 50px;
+  text-decoration: none;
+  color: grey;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.nav-menu li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.nav-menu hr {
+  border: none;
+  width: 80%;
+  height: 3px;
+  border-radius: 10px;
+  background-color: red;
+}
+
+.nav-login-cart {
+  display: flex;
+  align-items: center;
+  gap: 45px;
+}
+
+.login-links {
+  background-color: #007bff;
+  border: 2px solid #fff;
+  border-radius: 30px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.login-links:hover{
+  transform: 0.9;
+}
+
+.login-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 5px 10px;
+  font-size: 18px;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
+
+.login-link span {
+  display: inline-block;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+
+
+.profile-icon {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.profile-icon img {
+  width: 50px;
+  height: 50px; 
+  border-radius: 50%;
+  margin-right: 10px; 
+}
+
+.profile-icon span {
+  color: #333; 
+  font-weight: bold;
+}
+
+
+
+
+
+.nav-login-cart button {
+  width: 150px;
+  height: 50px;
+  outline: none;
+  border: 1px solid #7a7a7a;
+  border-radius: 75px;
+  color: #515151;
+  font-size: 20px;
+  font-weight: 500;
+  background: white;
+  cursor: pointer;
+  transition: .3s ease;
+}
+
+.nav-login-cart button:hover {
+  letter-spacing: 1.5px;
+  color: #f9f9f9;
+  transform: scale(0.95);
+  background-color: #003e80;
+}
+
+.nav-login-cart button:active {
+  transform: scale(.9);
+  background: #f3f3f3;
+}
+
+.nav-cart-count {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -35px;
+  margin-left: -55px;
+  border-radius: 11px;
+  font-size: 14px;
+  background: red;
+  color: white;
+}
+
+.nav-profile-icon {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
