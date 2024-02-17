@@ -1,9 +1,7 @@
-// models/cartItem.js
-
 const mongoose = require('mongoose');
 
 const cartItemSchema = new mongoose.Schema({
-  productId : String,
+  productId: String,
   name: String,
   price: Number,
   description: String,
@@ -12,6 +10,6 @@ const cartItemSchema = new mongoose.Schema({
   userEmail: String
 });
 
-const CartItem = mongoose.model('CartItems', cartItemSchema);
+const CartItem = mongoose.model('CartItem', cartItemSchema);
 
 module.exports = CartItem;

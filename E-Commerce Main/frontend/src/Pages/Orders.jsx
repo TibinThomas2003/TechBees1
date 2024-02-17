@@ -49,6 +49,7 @@ const OrderStatus = styled.div`
   padding: 8px;
   border-radius: 8px;
   font-weight: bold;
+  
   ${({ status }) => {
     switch (status) {
       case "Processing":
@@ -79,6 +80,22 @@ const CancelButton = styled.button`
 
 export const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const userEmail = localStorage.getItem("userEmail"); // Retrieve userEmail from local storage
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/orders/orders/${userEmail}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch orders');
+      }
+      const orders = await response.json();
+      console.log('Orders:', orders);
+      setOrders(orders); // Update state with fetched orders
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      // Handle error appropriately (e.g., show error message to the user)
+    }
+  };
 
   const cancelOrder = async (orderId) => {
     const confirmed = window.confirm(
@@ -102,24 +119,8 @@ export const Orders = () => {
   };
 
   useEffect(() => {
-    // Fetch orders data from the database
-    const fetchOrders = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/orders/orders');
-        if (!response.ok) {
-          throw new Error('Failed to fetch orders');
-        }
-        const orders = await response.json();
-        console.log('Orders:', orders);
-        setOrders(orders); // Update state with fetched orders
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-        // Handle error appropriately (e.g., show error message to the user)
-      }
-    };
-      
     fetchOrders();
-  }, []);
+  }, [userEmail]); // Fetch orders whenever userEmail changes
 
   return (
     <Container className="container">
