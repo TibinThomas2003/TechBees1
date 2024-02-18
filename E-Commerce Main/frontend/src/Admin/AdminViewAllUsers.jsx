@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Sidebar from './SideBar';
 import {
   Paper,
   Typography,
@@ -6,6 +7,11 @@ import {
   Button,
   Avatar,
   CircularProgress,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 // Header component
@@ -28,6 +34,10 @@ const ViewAllUsersHeader = () => (
 const ViewAllUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -92,18 +102,50 @@ const ViewAllUsers = () => {
     }
   };
 
+  const handleUpdatePassword = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+  };
+
+  const handleConfirmUpdatePassword = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/admin/updatepassword', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update password');
+      }
+      alert('Password updated successfully');
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Error updating password:', error);
+      alert('Failed to update password');
+    }
+  };
 
   return (
     <div
       style={{ display: "flex", height: "100vh", backgroundColor: "#f9f9f9" }}
     >
+      {/* Sidebar */}
+      <Sidebar style={{ width: "30%" }} />
 
-      {/* Right Division */}
+      {/* Main content */}
       <main
         className="right-panel"
         style={{
           width: "100%",
-          height: "100%",
           padding: "20px",
           borderRadius: "8px",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
@@ -162,8 +204,18 @@ const ViewAllUsers = () => {
                     )}
                   </Grid>
                   <Grid item xs={12} sm={6} container justifyContent="flex-end">
+                    {user.email === "admin@gmail.com" && (
+                      // Render update button for admin
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleUpdatePassword}
+                      >
+                        Update Password
+                      </Button>
+                    )}
                     {user.email !== "admin@gmail.com" && (
-                      // Changed color prop to 'secondary'
+                      // Render delete button for non-admin users
                       <Button
                         variant="contained"
                         color="secondary"
@@ -178,6 +230,43 @@ const ViewAllUsers = () => {
             </Paper>
           ))
         )}
+
+        {/* Update Password Dialog */}
+        <Dialog open={openDialog} onClose={handleCloseDialog}>
+          <DialogTitle>Update Password</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="normal"
+              label="Current Password"
+              type="password"
+              fullWidth
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              label="New Password"
+              type="password"
+              fullWidth
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              label="Confirm New Password"
+              type="password"
+              fullWidth
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button onClick={handleConfirmUpdatePassword} color="primary">
+              Update Password
+            </Button>
+          </DialogActions>
+        </Dialog>
       </main>
     </div>
   );

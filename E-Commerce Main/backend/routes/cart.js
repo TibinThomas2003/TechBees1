@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const CartItem = require('../models/Cart');
+const Cart = require('../models/Cart');
 
 router.post('/add-to-cart', async (req, res) => {
   try {
@@ -25,15 +26,15 @@ router.post('/add-to-cart', async (req, res) => {
   }
 });
 
-router.get('/get-cart-items', async (req, res) => {
+router.get('/cart/get-cart-items', async (req, res) => {
   try {
-    const { userEmail } = req.query;
-    const cartItems = await CartItem.find({ userEmail });
+    const cartItems = await Cart.find();
     res.status(200).json(cartItems);
   } catch (error) {
     console.error('Error fetching cart items:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 module.exports = router;

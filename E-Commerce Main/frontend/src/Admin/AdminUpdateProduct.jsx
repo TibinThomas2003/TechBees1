@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Typography, TextField, Button, Container, Grid, Paper, Snackbar } from '@mui/material';
 import UpdateIcon from '@mui/icons-material/Update';
 import Alert from '@mui/material/Alert';
+import Sidebar from './SideBar';
 
 // Header component
 const Header = () => {
@@ -76,7 +77,7 @@ const UpdateProduct = () => {
     }}>
       {/* Header */}
       <Header />
-
+      <Sidebar style={{ width: "30%" }} />
       {/* Right Division */}
       <main className="right-panel" style={{
         width: '80%',

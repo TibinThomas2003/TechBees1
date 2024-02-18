@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Typography, Container, Grid, Card, CardContent, CardActions } from '@mui/material';
+import Sidebar from './SideBar';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/Update';
 
@@ -45,6 +46,15 @@ const ViewProducts = () => {
     }
   };
 
+  const sidebarStyle = {
+    width: '14%',
+    height: '100%',
+    backgroundColor: '#fff', // Adjust as needed
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', // Adjust as needed
+    borderRadius: '8px', // Adjust as needed
+    marginRight: '20px', // Adjust as needed
+    padding: '20px', // Adjust as needed
+  };
 
   return (
     <div style={{
@@ -52,9 +62,11 @@ const ViewProducts = () => {
       height: '100vh',
       backgroundColor: '#f9f9f9',
     }}>
-
+      <div style={sidebarStyle}>
+        <Sidebar />
+      </div>
       <main className="right-panel" style={{
-        width: '100%',
+        flex: '1',
         height: '100%',
         padding: '20px',
         borderRadius: '8px',
@@ -71,7 +83,6 @@ const ViewProducts = () => {
           <h1 style={{ fontSize: '32px', marginBottom: '10px' }}>View Products</h1>
           <Typography variant="subtitle1">Explore and manage all products.</Typography>
         </header>
-
         <Container maxWidth="lg">
           <Grid container spacing={3}>
             {products.map((product) => (

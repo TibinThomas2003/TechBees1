@@ -7,7 +7,7 @@ const Cart = () => {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/cart/get-cart-items');
+        const response = await axios.get('http://localhost:5000/api/cart/get-cart-items');
         setCartItems(response.data);
       } catch (error) {
         console.error('Error fetching cart items:', error);

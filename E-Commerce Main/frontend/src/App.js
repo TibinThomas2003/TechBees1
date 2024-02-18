@@ -15,6 +15,7 @@ import AdminViewAllUsers from "./Admin/AdminViewAllUsers";
 import AdminViewAllProduct from "./Admin/AdminViewAllProducts";
 import AdminUpdateProduct from "./Admin/AdminUpdateProduct";
 import PlaceOrder from "./Pages/PlaceOrder";
+import { AdminViewOrders } from "./Admin/AdminViewOrders";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -109,6 +110,10 @@ function App() {
       <Route
         path="/adminupdateproduct/:productId"
         element={<AdminUpdateProduct />}
+      />
+      <Route
+        path="/adminvieworders"
+        element={<AdminViewOrders />}
       />
     </>
   )}

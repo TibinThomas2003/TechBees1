@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Grid, Paper, Alert, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Sidebar from './SideBar';
 
 const AddProduct = () => {
   const [productData, setProductData] = useState({
@@ -51,14 +52,27 @@ const AddProduct = () => {
       // Handle error
     }
   };
-
+  const sidebarStyle = {
+    width: '13%',
+    height: '100%',
+    backgroundColor: '#fff', // Adjust as needed
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', // Adjust as needed
+    borderRadius: '8px', // Adjust as needed
+    marginRight: '20px', // Adjust as needed
+    padding: '20px', // Adjust as needed
+  };
+  
   return (
+    
     
     <div style={{
       display: 'flex',
       height: '100vh',
       backgroundColor: '#f9f9f9',
     }}>
+      <div style={sidebarStyle}>
+        <Sidebar />
+      </div>
       <main className="right-panel" style={{
         width: '100%',
         height: '100%',

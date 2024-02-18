@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // Signup route
@@ -66,8 +67,11 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // If everything is correct, you can generate a token or set a session and send a success response
-    res.status(200).json({ message: 'Login successful', user });
+    // Generate JWT token
+    const token = jwt.sign({ userId: user._id, email: user.email }, 'techbees', { expiresIn: '1h' });
+
+    // Send the token along with the success response
+    res.status(200).json({ message: 'Login successful', user, token });
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -137,16 +141,38 @@ router.get('/details/:email', async (req, res) => {
   }
 });
 
-
-// Route to get total number of users
-router.get('/total', async (req, res) => {
+// Route to update password
+router.put('/admin/updatepassword', async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments();
-    res.json({ total: totalUsers });
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    // Check if new password matches confirm password
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ error: 'New password and confirm password do not match' });
+    }
+
+    // Find the user by their email
+    const user = await User.findOne({ email: req.user.email });
+
+    // Check if the current password is correct
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Current password is incorrect' });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'Password updated successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Error updating password:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 module.exports = router;

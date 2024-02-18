@@ -1,89 +1,165 @@
-import React, { useState } from 'react';
-import './Navbar.css';
-import logo from "../Assets/logo.png";
-import pflicon from "../Assets/profile_icon.jpg";
-import cartIcon from "../Assets/cart_icon.png";
-import { Link, NavLink } from 'react-router-dom';
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import { NavLink } from 'react-router-dom';
 
-const Navbar = ({ cartItemCount, isLoggedIn, handleLogout }) => {
-  const [menu, setMenu] = useState('home');
-
-  const activeLinkStyle = {
-    color: '#ff0000',
-  };
-
-  const handleMenuClick = (page) => {
-    setMenu(page);
-  };
-
-  // Retrieve userEmail from local storage
+function ResponsiveAppBar({ cartItemCount, isLoggedIn, handleLogout }) {
   const userEmail = localStorage.getItem('userEmail');
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  // Condition to hide Navbar if userEmail is "admin@gmail.com"
-  if (userEmail === "admin@gmail.com") {
-    return null; // Return null to hide the Navbar
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  if (userEmail === 'admin@gmail.com') {
+    return null; // Render nothing if userEmail is admin@gmail.com
   }
 
   return (
-    <div className="navbar">
-      <div className="nav-logo">
-        <img src={logo} alt="" />
-        <p>TechBees</p>
-      </div>
-      <ul className="nav-menu">
-        {isLoggedIn && (
-          <>
-          <li onClick={() => handleMenuClick("home")}>
-              <NavLink to="/home" style={menu === "home" ? activeLinkStyle : {}}>
+    <AppBar position="static">
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            noWrap
+            component={NavLink}
+            to="/"
+            sx={{
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+              '&:hover': { // Remove hover effect
+                textDecoration: 'none',
+              }
+            }}
+          >
+            TECHBEES
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {!userEmail ? (
+            <Button
+              component={NavLink}
+              to="/login"
+              color="inherit"
+              sx={{ '&:hover': { // Remove hover effect
+                backgroundColor: 'transparent',
+              }}}
+            >
+              Login
+            </Button>
+          ) : (
+            <>
+              <Button
+                component={NavLink}
+                to="/home"
+                color="inherit"
+                sx={{ '&:hover': { // Remove hover effect
+                  backgroundColor: 'transparent',
+                }}}
+              >
                 Home
-              </NavLink>
-            </li>
-            <li onClick={() => handleMenuClick("orders")}>
-              <NavLink to="/orders" style={menu === "orders" ? activeLinkStyle : {}}>
+              </Button>
+              <Button
+                component={NavLink}
+                to="/orders"
+                color="inherit"
+                sx={{ '&:hover': { // Remove hover effect
+                  backgroundColor: 'transparent',
+                }}}
+              >
                 Orders
-              </NavLink>
-            </li>
-            <li onClick={() => handleMenuClick("custom")}>
-              <NavLink to="/custom" style={menu === "custom" ? activeLinkStyle : {}}>
+              </Button>
+              <Button
+                component={NavLink}
+                to="/custom"
+                color="inherit"
+                sx={{ '&:hover': { // Remove hover effect
+                  backgroundColor: 'transparent',
+                }}}
+              >
                 Custom PC
-              </NavLink>
-            </li>
-            <li onClick={() => handleMenuClick("contact")}>
-              <NavLink to="/contact" style={menu === "contact" ? activeLinkStyle : {}}>
+              </Button>
+              <Button
+                component={NavLink}
+                to="/contact"
+                color="inherit"
+                sx={{ '&:hover': { // Remove hover effect
+                  backgroundColor: 'transparent',
+                }}}
+              >
                 Contact
-              </NavLink>
-            </li>
-            <li onClick={() => handleMenuClick("about")}>
-              <NavLink to="/about" style={menu === "about" ? activeLinkStyle : {}}>
+              </Button>
+              <Button
+                component={NavLink}
+                to="/about"
+                color="inherit"
+                sx={{ '&:hover': { // Remove hover effect
+                  backgroundColor: 'transparent',
+                }}}
+              >
                 About
-              </NavLink>
-            </li>
-          </>
-        )}
-      </ul>
-
-      <div className="nav-login-cart">
-        {isLoggedIn ? (
-          <>
-            <div className="profile-icon" onClick={() => handleMenuClick("profile")}>
-              <img src={pflicon} alt="" />
-            </div>
-            <Link to={"/"}>
-              <button onClick={handleLogout}>Logout</button>
-            </Link>
-            <NavLink to="/cart">
-              <img src={cartIcon} alt="" />
-            </NavLink>
-            <div className="nav-cart-count">{cartItemCount}</div>
-          </>
-        ) : (
-          <NavLink to="/login">
-            <button>Login</button>
-          </NavLink>
-        )}
-      </div>
-    </div>
+              </Button>
+              <IconButton
+                component={NavLink}
+                to="/cart"
+                color="inherit"
+                sx={{ ml: 2, '&:hover': { // Remove hover effect
+                  backgroundColor: 'transparent',
+                }}}
+              >
+                <ShoppingCartIcon />
+              </IconButton>
+              <IconButton
+                color="inherit"
+                aria-label="profile"
+                onClick={handleMenuOpen}
+                sx={{ ml: 1, '&:hover': { // Remove hover effect
+                  backgroundColor: 'transparent',
+                }}}
+              >
+                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem component={NavLink} to="/profile" onClick={handleMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
+          )}
+        </Box>
+        <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+          <IconButton
+            size="large"
+            edge="end"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
-};
+}
 
-export default Navbar;
+export default ResponsiveAppBar;

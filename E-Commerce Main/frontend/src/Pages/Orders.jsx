@@ -1,99 +1,57 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import { Container, Typography, Grid, Paper, Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-const Container = styled.div`
-  width: 100%;
-  max-width: 1000px;
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-`;
+const OrderItem = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-5px)",
+    boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
+  },
+}));
 
-const Header = styled.div`
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-const OrderContainer = styled.div`
-  margin-bottom: 20px;
-  position: relative;
-`;
-
-const OrderItem = styled.div`
-  display: flex;
-  flex-direction: column; /* Changed direction to column for better layout */
-  padding: 10px;
-  border-radius: 12px;
-  border: 2px solid #3d5a80;
-  transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
-
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-  }
-`;
-
-const OrderDetails = styled.div`
-  flex-grow: 1;
-  text-align: left;
-`;
-
-const OrderDate = styled.div`
-  font-size: 14px;
-  color: #3d5a80;
-`;
-
-const OrderStatus = styled.div`
-  color: white;
-  padding: 8px;
-  border-radius: 8px;
-  font-weight: bold;
-  
-  ${({ status }) => {
+const OrderStatus = styled("div")(({ theme, status }) => ({
+  color: "white",
+  padding: theme.spacing(1, 2),
+  borderRadius: theme.spacing(1),
+  fontWeight: "bold",
+  textAlign: "center",
+  backgroundColor: (() => {
     switch (status) {
       case "Processing":
-        return "background-color: lightcoral;";
+        return "#ff9800";
       case "Order Placed":
-        return "background-color: darkorange;";
+        return "#03a9f4";
       case "Shipped":
-        return "background-color: #3d5a80;";
+        return "#4caf50";
       case "Delivered":
-        return "background-color: green;";
+        return "#9c27b0";
       case "Canceled":
-        return "background-color: red;";
+        return "#f44336";
       default:
-        return "background-color: #3d5a80;";
+        return "#666666";
     }
-  }}
-`;
+  })(),
+}));
 
-const CancelButton = styled.button`
-  background-color: red;
-  color: white;
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-`;
-
-export const Orders = () => {
+const Orders = () => {
   const [orders, setOrders] = useState([]);
-  const userEmail = localStorage.getItem("userEmail"); // Retrieve userEmail from local storage
+  const userEmail = localStorage.getItem("userEmail");
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/orders/${userEmail}`);
+      const response = await fetch(
+        `http://localhost:5000/api/orders/orders/${userEmail}`
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        throw new Error("Failed to fetch orders");
       }
       const orders = await response.json();
-      console.log('Orders:', orders);
-      setOrders(orders); // Update state with fetched orders
+      setOrders(orders);
     } catch (error) {
-      console.error('Error fetching orders:', error);
-      // Handle error appropriately (e.g., show error message to the user)
+      console.error("Error fetching orders:", error);
     }
   };
 
@@ -103,66 +61,70 @@ export const Orders = () => {
     );
     if (confirmed) {
       try {
-        const response = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
-          method: 'DELETE',
-        });
+        const response = await fetch(
+          `http://localhost:5000/api/orders/${orderId}`,
+          {
+            method: "DELETE",
+          }
+        );
         if (!response.ok) {
-          throw new Error('Failed to cancel order');
+          throw new Error("Failed to cancel order");
         }
-        // Remove canceled order from the state
-        setOrders(prevOrders => prevOrders.filter(order => order._id !== orderId));
+        setOrders((prevOrders) =>
+          prevOrders.filter((order) => order._id !== orderId)
+        );
       } catch (error) {
-        console.error('Error canceling order:', error);
-        // Handle error appropriately (e.g., show error message to the user)
+        console.error("Error canceling order:", error);
       }
     }
   };
 
   useEffect(() => {
     fetchOrders();
-  }, [userEmail]); // Fetch orders whenever userEmail changes
+  }, [userEmail]);
 
   return (
-    <Container className="container">
-      <Header>
-        <h1 style={{ color: "#3d5a80" }}>Your Orders</h1>
-      </Header>
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        Your Orders
+      </Typography>
       {orders.length === 0 ? (
-        <div className="row">
-          <div className="col-12">
-            <div style={{ textAlign: "center" }}>
-              <p style={{ color: "#8b4513" }}>
-                You haven't placed any orders yet. Start shopping now!
-              </p>
-            </div>
-          </div>
-        </div>
+        <Typography variant="subtitle1" align="center">
+          You haven't placed any orders yet. Start shopping now!
+        </Typography>
       ) : (
         orders.map((order) => (
-          <div key={order._id} className="row">
-            <div className="col-12">
-              <OrderContainer>
-                <OrderItem>
-                  <OrderDetails>
-                    <h3 style={{ color: "#3d5a80" }}>{order.productName}</h3>
-                    <p>Shipping Address: {order.shippingAddress}</p>
-                    <p>Total Value: ${order.totalValue.toFixed(2)}</p>
-                    <OrderDate>Placed on: {order.createdAt}</OrderDate>
-                  </OrderDetails>
-                  <OrderStatus status={order.status}>
-                    <center>
-                    {order.status}
-                    </center>
-                  </OrderStatus>
-                </OrderItem>
+          <OrderItem key={order._id}>
+            <Grid container alignItems="center">
+              <Grid item xs={12} md={8}>
+                <Typography variant="h6">{order.productName}</Typography>
+                <Typography variant="body1" paragraph>
+                  Shipping Address: {order.shippingAddress}
+                </Typography>
+                <Typography variant="body1">
+                  Total Value: ${order.totalValue.toFixed(2)}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Placed on: {order.createdAt}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <OrderStatus status={order.status}>
+                  {order.status}
+                </OrderStatus>
                 {order.status !== "Delivered" && order.status !== "Canceled" && (
-                  <CancelButton onClick={() => cancelOrder(order._id)}>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => cancelOrder(order._id)}
+                    sx={{ mt: 1, width: { xs: "100%", md: "auto" } }} 
+                  >
                     Cancel Order
-                  </CancelButton>
+                  </Button>
                 )}
-              </OrderContainer>
-            </div>
-          </div>
+              </Grid>
+            </Grid>
+          </OrderItem>
         ))
       )}
     </Container>
