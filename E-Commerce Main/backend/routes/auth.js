@@ -79,6 +79,41 @@ router.post('/login', async (req, res) => {
 });
 
 
+// Endpoint to fetch user details
+router.get('/profile', async (req, res) => {
+  const userEmail = req.query.email; // Get userEmail from query parameter
+  try {
+    const user = await User.findOne({ email: userEmail });
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Route to update user profile
+router.put('/updateProfile', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Find the user by their email and update their profile
+    const updatedUser = await User.findOneAndUpdate({ email }, req.body, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 // Define route for fetching all registered users
 router.get('/viewusers', async (req, res) => {

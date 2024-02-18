@@ -1,43 +1,230 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Typography, Grid, Card, CardMedia, IconButton, Button } from "@mui/material";
+import { Delete as DeleteIcon, Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
+import styled from "styled-components";
 
-const Cart = () => {
+const Container = styled.div`
+  width: 80%;
+  margin: 20px auto;
+`;
+
+const ProductCard = styled(Card)`
+  margin-bottom: 20px;
+`;
+
+const QuantityContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const BuyNowButton = styled(Button)`
+  && {
+    background-color: #f50057; /* Pink */
+    color: white;
+    padding: 15px 30px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+
+    &:hover {
+      background-color: #d81b60; /* Darker Pink */
+    }
+  }
+`;
+
+const Cart = ({ history }) => {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/cart/get-cart-items');
-        setCartItems(response.data);
+        const userEmail = localStorage.getItem("userEmail");
+        if (userEmail) {
+          const response = await axios.get(
+            `http://localhost:5000/api/cart/cart/get-cart-items?email=${userEmail}`
+          );
+          setCartItems(response.data);
+        }
       } catch (error) {
-        console.error('Error fetching cart items:', error);
+        console.error("Error fetching cart items:", error);
       }
     };
 
     fetchCartItems();
   }, []);
 
+  const handleQuantityChange = async (itemId, newQuantity) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/cart/update-quantity/${itemId}`,
+        { quantity: newQuantity }
+      );
+      if (response.status === 200) {
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
+            item._id === itemId ? { ...item, quantity: newQuantity } : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
+  };
+
+  const handleDelete = async (itemId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/cart/delete-item/${itemId}`
+      );
+      if (response.status === 200) {
+        setCartItems((prevItems) =>
+          prevItems.filter((item) => item._id !== itemId)
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  };
+
+  
+  const handleBuyNow = (item) => {
+    const productId = item.productId;
+    const quantity = item.quantity;
+    window.location.href = `/placeorder/${productId}?quantity=${quantity}`;
+  };
+
+
+  const handleProceedToBuy = () => {
+    // Assuming you want to proceed only if there are items in the cart
+    if (cartItems.length > 0) {
+      // Get the product IDs from cartItems
+      const productIds = cartItems.map(item => item.productId);
+      // Store the product IDs in session storage
+      localStorage.setItem('productIds', JSON.stringify(productIds));
+      // Redirect to the next page
+      window.location.href = '/placeordercart';
+    } else {
+      console.log("Your cart is empty. Please add items to proceed.");
+      // Handle the case where cart is empty
+    }
+  };
+  
+
+  const calculateSubtotal = () => {
+    return cartItems
+      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .toFixed(2);
+  };
+
   return (
-    <div>
-      <h1>Cart Items</h1>
-      <ul>
-        {cartItems.map(item => (
-          <li key={item._id}>
-            <div>
-              <img src={item.image1} alt={item.name} style={{ width: '100px', height: '100px' }} />
-            </div>
-            <div>
-              <h3>{item.name}</h3>
-              <p>Description: {item.description}</p>
-              <p>Price: ${item.price}</p>
-              <p>Quantity: {item.quantity}</p>
-              <p>User Email: {item.userEmail}</p>
-              <p>Product ID: {item.productId}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Container>
+      <br />
+      {cartItems.length > 0 && (
+        <>
+          <center>
+            <Typography variant="h3">
+              <strong>Subtotal:</strong> ${calculateSubtotal()}
+            </Typography>
+          </center>
+        </>
+      )}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleProceedToBuy}
+        style={{ marginTop: "20px", width: "100%" }}
+      >
+        Proceed to Buy
+      </Button>
+
+      <br />
+      <br />
+      <br />
+      <br />
+      <Grid container justifyContent="center">
+        {cartItems.length === 0 ? (
+          <Typography variant="body1" align="center">
+            Your cart is empty
+          </Typography>
+        ) : (
+          cartItems.map((item) => (
+            <Grid item xs={12} key={item._id}>
+              <ProductCard>
+                <Grid container alignItems="center">
+                  <Grid item xs={12} sm={2}>
+                    <CardMedia
+                      component="img"
+                      src={item.image1}
+                      alt={item.name}
+                      style={{ width: "100%", height: "auto" }}
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    container
+                    direction="column"
+                    justifyContent="space-between"
+                    style={{ padding: "20px" }}
+                  >
+                    <Typography variant="h6" gutterBottom>
+                      {item.name}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Description:</strong> {item.description}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Price:</strong> ${item.price}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>User Email:</strong> {item.userEmail}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Product ID:</strong> {item.productId}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={2} style={{ padding: "20px" }}>
+                    <QuantityContainer>
+                      <IconButton
+                        aria-label="Remove"
+                        onClick={() =>
+                          handleQuantityChange(item._id, item.quantity - 1)
+                        }
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography variant="body1">{item.quantity}</Typography>
+                      <IconButton
+                        aria-label="Add"
+                        onClick={() =>
+                          handleQuantityChange(item._id, item.quantity + 1)
+                        }
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </QuantityContainer>
+                  </Grid>
+                  <Grid item xs={12} sm={2} style={{ padding: "20px" }}>
+                    <IconButton
+                      aria-label="Delete"
+                      onClick={() => handleDelete(item._id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+              </ProductCard>
+            </Grid>
+          ))
+        )}
+      </Grid>
+    </Container>
   );
 };
 

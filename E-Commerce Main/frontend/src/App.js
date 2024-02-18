@@ -15,7 +15,9 @@ import AdminViewAllUsers from "./Admin/AdminViewAllUsers";
 import AdminViewAllProduct from "./Admin/AdminViewAllProducts";
 import AdminUpdateProduct from "./Admin/AdminUpdateProduct";
 import PlaceOrder from "./Pages/PlaceOrder";
+import PlaceOrderCart from "./Pages/PlaceOrderCart";
 import { AdminViewOrders } from "./Admin/AdminViewOrders";
+import ProfilePage from "./Pages/Profile";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -76,6 +78,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login setIsLoggedIn={handleLogin} />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/home" element={<Home />} />
           {/* Pass cartItems and setCartItems as props */}
           <Route
@@ -87,6 +90,7 @@ function App() {
           <Route path="/viewproduct/:id" element={<ViewProduct />} userId={userId} />
           <Route path="/viewcategory/:category" element={<ViewCategory />} />
           <Route path="/placeorder/:id" element={<PlaceOrder />} />
+          <Route path="/placeordercart" element={<PlaceOrderCart />} />
 
           {/* Protected admin routes */}
           {isAdminLoggedIn ==="admin@gmail.com" && (

@@ -10,6 +10,6 @@ const cartSchema = new mongoose.Schema({
   userEmail: String
 });
 
-const Cart = mongoose.model('Cart', cartSchema);
+const CartItem = mongoose.model('CartItem', cartSchema);
 
-module.exports = Cart;
+module.exports = CartItem;
