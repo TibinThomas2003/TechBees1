@@ -16,7 +16,7 @@ const PlaceOrderCart = () => {
       const fetchProductDetails = async () => {
         try {
           const promises = parsedProductIds.map(async (productId) => {
-            const response = await axios.get(`http://localhost:5000/api//product/${productId}`);
+            const response = await axios.get(`http://localhost:5000/api/product/${productId}`);
             return response.data;
           });
           const resolvedProductDetails = await Promise.all(promises);
