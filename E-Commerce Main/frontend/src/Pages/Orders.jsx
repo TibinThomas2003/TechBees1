@@ -62,7 +62,7 @@ const Orders = () => {
     if (confirmed) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/orders/${orderId}`,
+          `http://localhost:5000/api/orders/cancelorder/${orderId}`,
           {
             method: "DELETE",
           }

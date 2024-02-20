@@ -22,6 +22,8 @@ const BuyNowButton = styled(Button)`
   && {
     background-color: #f50057; /* Pink */
     color: white;
+    width:100px;
+    height:40px;
     padding: 15px 30px;
     border-radius: 20px;
     font-weight: bold;
@@ -91,29 +93,11 @@ const Cart = ({ history }) => {
     }
   };
 
-  
   const handleBuyNow = (item) => {
     const productId = item.productId;
     const quantity = item.quantity;
     window.location.href = `/placeorder/${productId}?quantity=${quantity}`;
   };
-
-
-  const handleProceedToBuy = () => {
-    // Assuming you want to proceed only if there are items in the cart
-    if (cartItems.length > 0) {
-      // Get the product IDs from cartItems
-      const productIds = cartItems.map(item => item.productId);
-      // Store the product IDs in session storage
-      localStorage.setItem('productIds', JSON.stringify(productIds));
-      // Redirect to the next page
-      window.location.href = '/placeordercart';
-    } else {
-      console.log("Your cart is empty. Please add items to proceed.");
-      // Handle the case where cart is empty
-    }
-  };
-  
 
   const calculateSubtotal = () => {
     return cartItems
@@ -128,19 +112,11 @@ const Cart = ({ history }) => {
         <>
           <center>
             <Typography variant="h3">
-              <strong>Subtotal:</strong> ${calculateSubtotal()}
+              <strong>Subtotal:</strong> ₹{calculateSubtotal()}
             </Typography>
           </center>
         </>
       )}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleProceedToBuy}
-        style={{ marginTop: "20px", width: "100%" }}
-      >
-        Proceed to Buy
-      </Button>
 
       <br />
       <br />
@@ -180,14 +156,15 @@ const Cart = ({ history }) => {
                       <strong>Description:</strong> {item.description}
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Price:</strong> ${item.price}
+                      <strong>Price:</strong> ₹{item.price}
                     </Typography>
                     <Typography variant="body1">
                       <strong>User Email:</strong> {item.userEmail}
                     </Typography>
-                    <Typography variant="body1">
-                      <strong>Product ID:</strong> {item.productId}
-                    </Typography>
+                    <br />
+                    <BuyNowButton variant="contained" onClick={() => handleBuyNow(item)}>
+                      Buy Now
+                    </BuyNowButton>
                   </Grid>
                   <Grid item xs={12} sm={2} style={{ padding: "20px" }}>
                     <QuantityContainer>

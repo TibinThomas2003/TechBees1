@@ -1,3 +1,6 @@
+// server.js
+
+// Import necessary modules
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -5,7 +8,7 @@ const path = require('path');
 require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
@@ -43,6 +46,9 @@ app.use("/api/cart", cartRoute);
 const orderRoute = require('./routes/order');
 app.use('/api/orders', orderRoute); 
 
+// Route for categories
+const categoryRoute = require('./routes/category'); // Import the category route file
+app.use('/api/category', categoryRoute); // Use the category route
 
 app.listen(port, () => {
     console.log(`Server is up and running on port ${port}`);

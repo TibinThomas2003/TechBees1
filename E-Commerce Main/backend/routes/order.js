@@ -50,4 +50,31 @@ router.put('/orders/:orderId', async (req, res) => {
   }
 });
 
+// Route to cancel an order
+router.delete('/cancelorder/:orderId', async (req, res) => {
+  const orderId = req.params.orderId;
+  try {
+    await Order.findByIdAndDelete(orderId);
+    res.status(200).json({ message: 'Order canceled successfully' });
+  } catch (error) {
+    console.error('Error canceling order:', error);
+    res.status(500).json({ error: 'Failed to cancel order' });
+  }
+});
+
+// Route to get the total number of orders
+router.get('/totalorders', async (req, res) => {
+  try {
+    // Count all orders in the database
+    const totalOrders = await Order.countDocuments();
+
+    // Respond with the total number of orders
+    res.status(200).json({ totalOrders });
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching total number of orders:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;

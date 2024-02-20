@@ -112,4 +112,31 @@ router.get('/vieweachproduct/:id', async (req, res) => {
 })
 
 
+
+router.get('/customproducts', async (req, res) => {
+  const { category } = req.query;
+  try {
+    const products = await Product.find({ category });
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+});
+
+// Define route to get the total number of products
+router.get('/totalproducts', async (req, res) => {
+  try {
+    // Count all products in the database
+    const totalProducts = await Product.countDocuments();
+
+    // Respond with the total number of products
+    res.status(200).json({ totalProducts });
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching total number of products:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;

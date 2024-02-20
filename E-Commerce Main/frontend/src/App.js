@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import '@fortawesome/fontawesome-free/css/all.css';
 import Navbar from "./Components/Navbar/Navbar";
 import Home from "./Pages/Home";
 import Cart from "./Pages/Cart";
@@ -18,6 +19,8 @@ import PlaceOrder from "./Pages/PlaceOrder";
 import PlaceOrderCart from "./Pages/PlaceOrderCart";
 import { AdminViewOrders } from "./Admin/AdminViewOrders";
 import ProfilePage from "./Pages/Profile";
+import { Contact } from "./Pages/Contact";
+import About from "./Pages/About";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -87,6 +90,8 @@ function App() {
           />
           <Route path="/orders" element={<Orders />} />
           <Route path="/custom" element={<CustomPC />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
           <Route path="/viewproduct/:id" element={<ViewProduct />} userId={userId} />
           <Route path="/viewcategory/:category" element={<ViewCategory />} />
           <Route path="/placeorder/:id" element={<PlaceOrder />} />

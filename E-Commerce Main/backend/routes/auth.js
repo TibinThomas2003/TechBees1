@@ -210,4 +210,21 @@ router.put('/admin/updatepassword', async (req, res) => {
 });
 
 
+
+
+// Define route to get the total number of users
+router.get('/totalusers', async (req, res) => {
+  try {
+    // Count all users in the database
+    const totalUsers = await User.countDocuments();
+
+    // Respond with the total number of users
+    res.status(200).json({ totalUsers });
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching total number of users:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;
