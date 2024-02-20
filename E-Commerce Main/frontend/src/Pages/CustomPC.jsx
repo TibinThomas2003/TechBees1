@@ -166,7 +166,7 @@ const CustomPC = () => {
                   <ProductItem key={product.id} selected={selectedProduct === product}>
                     <ProductImage src={product.image1} alt={product.name} />
                     <AddToCartIcon onClick={() => addToCart(product)} />
-                    <p>{product.name.substring(0, 40)}</p>
+                    <p>{product.name.substring(0, 80)}</p>
                     <p>Price: {IndianRupeeSymbol} {product.price.toFixed(2)}</p>
                   </ProductItem>
                 ))}
