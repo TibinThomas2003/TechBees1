@@ -53,6 +53,19 @@ router.get('/viewproducts', async (req, res) => {
   }
 });
 
+
+// Define route for fetching all products for admin home page
+router.get('/admin/viewproducts', async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 // Update a product by ID
 router.put('/update/:id', async (req, res) => {
   const productId = req.params.id;
@@ -123,6 +136,7 @@ router.get('/customproducts', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
+
 
 // Define route to get the total number of products
 router.get('/totalproducts', async (req, res) => {

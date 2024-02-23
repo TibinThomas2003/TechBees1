@@ -1,58 +1,83 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from '../Components/Assets/logo.png';
 
 const Container = styled.div`
   max-width: 400px;
   margin: 50px auto;
   padding: 20px;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  box-shadow: 1px 1px 5px #007bff,-1px -1px 5px #007bff;
+  text-align: center;
 `;
 
-const Title = styled.h1`
-  text-align: center;
+const Title = styled.h2`
   color: #007bff;
+  margin : 5%;
+  margin-bottom: 10%;
+  letter-spacing: 2px;
+  font-weight: 400;
+  text-shadow: 1px 2px 4px #bbb;
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 30px;
+  align-items: center; /* Align items (input fields and button) at the center horizontally */
 `;
-
-const Label = styled.label`
-  font-weight: bold;
-  margin-bottom: 5px;
-`;
+ 
 
 const Input = styled.input`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+width: 100%;
+  padding: 15px;   
+  border: none;
+  background: #F4F4F4; 
   font-size: 14px;
+  border-radius: 10px;
+  box-shadow: inset 1px 2px 4px #ccc;
 `;
 
 const Button = styled.button`
-  padding: 12px;
-  background-color: #007bff;
+  width: 50%;
+  padding: 10px; 
+  font-size: 18px;
   color: #fff;
+  letter-spacing :2px;
+  background: #007bff; 
   border: none;
-  border-radius: 4px;
+  border-radius: 30px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+  box-shadow: 1px 2px 4px #999,-1px -1px 5px #999; 
+  transition:   .2s ease;
 
-  &:hover {
-    background-color: #0056b3;
+  &:hover {  
+    transform: scale(0.9);
+    color: #fff; 
+    background-color: #999; 
+    box-shadow: 1px 2px 4px #444,-1px -1px 5px #000; 
   }
 `;
 
 const Message = styled.div`
-  text-align: center;
-  margin-top: 10px;
   font-size: 14px;
+`;
+
+const Image = styled.img`
+  max-width: 30%;
+  height: auto;
+  border-radius: 50%;
+  border: 4px solid #007bff;
+  margin-bottom: 20px;
+  box-shadow: 1px 2px 4px #007bff,-1px -2px 4px #007bff;
+  transition : .5s ease;
+  &:hover { 
+    cursor: pointer;
+    transform : scale(0.95);
+    filter: invert();
+  }
 `;
 
 const Login = ({ setIsLoggedIn }) => {
@@ -80,21 +105,16 @@ const Login = ({ setIsLoggedIn }) => {
         console.log('Login Successful:', data.user);
         alert('Login Successful : Welcome To TechBees', data.user);
 
-        // Set user session in localStorage
         localStorage.setItem('userSession', JSON.stringify(data.user));
         setIsLoggedIn(true);
 
-        // Store token and secret key in session storage
         sessionStorage.setItem('token', data.token);
         sessionStorage.setItem('secretKey', 'techbees');
 
-        // Store email in local storage
         localStorage.setItem('userEmail', formData.email);
 
-        // Check if the credentials match admin credentials
         const isAdmin = formData.email === 'admin@gmail.com' && formData.password === 'tibin@2003';
 
-        // Redirect to admin dashboard if admin, else redirect to home page
         navigate(isAdmin ? '/admindashboard' : '/home');
         window.location.reload();
       } else {
@@ -113,16 +133,12 @@ const Login = ({ setIsLoggedIn }) => {
 
   return (
     <Container>
-      <Title>Login</Title>
-      <Form onSubmit={handleLogin}>
-        <Label htmlFor="email">Email ID:</Label>
-        <Input type="email" id="email" name="email" onChange={handleChange} required />
-
-        <Label htmlFor="password">Password:</Label>
-        <Input type="password" id="password" name="password" onChange={handleChange} required />
-
+      <Image src={logo} alt="Logo" />
+      <Title>LogIn Here !</Title>
+      <Form onSubmit={handleLogin}> 
+        <Input type="email" id="email" placeholder="Enter Your Email ID..." name="email" onChange={handleChange} required /> 
+        <Input type="password" id="password" placeholder="Enter Your Password..." name="password" onChange={handleChange} required />
         <Button type="submit">Login</Button>
-
         <Message>
           Don't have an account? <Link to="/signup">Sign up here</Link>
         </Message>

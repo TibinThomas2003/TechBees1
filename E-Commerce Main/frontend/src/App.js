@@ -15,6 +15,7 @@ import AdminAddProduct from "./Admin/AdminAddProduct";
 import AdminViewAllUsers from "./Admin/AdminViewAllUsers";
 import AdminViewAllProduct from "./Admin/AdminViewAllProducts";
 import AdminUpdateProduct from "./Admin/AdminUpdateProduct";
+import AdminManageHome from "./Admin/AdminManageHome";
 import PlaceOrder from "./Pages/PlaceOrder";
 import PlaceOrderCart from "./Pages/PlaceOrderCart";
 import { AdminViewOrders } from "./Admin/AdminViewOrders";
@@ -123,6 +124,10 @@ function App() {
       <Route
         path="/adminvieworders"
         element={<AdminViewOrders />}
+      />
+      <Route
+        path="/adminmanagehome"
+        element={<AdminManageHome />}
       />
     </>
   )}

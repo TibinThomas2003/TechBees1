@@ -83,6 +83,12 @@ const Sidebar = () => {
             </ListItemIcon>
             <ListItemText primary="View All Users" />
           </ListItem>
+          <ListItem button component={Link} to="/adminmanagehome">
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Manage Home" />
+          </ListItem>
           {/* Logout Button */}
           <ListItem button onClick={openLogoutDialog}>
             <ListItemIcon>
