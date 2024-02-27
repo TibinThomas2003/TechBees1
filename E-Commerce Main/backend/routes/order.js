@@ -51,16 +51,17 @@ router.put('/orders/:orderId', async (req, res) => {
 });
 
 // Route to cancel an order
-router.delete('/cancelorder/:orderId', async (req, res) => {
+router.put('/cancelorder/:orderId', async (req, res) => {
   const orderId = req.params.orderId;
   try {
-    await Order.findByIdAndDelete(orderId);
-    res.status(200).json({ message: 'Order canceled successfully' });
+    const updatedOrder = await Order.findByIdAndUpdate(orderId, { status: "Canceled" }, { new: true });
+    res.status(200).json(updatedOrder);
   } catch (error) {
     console.error('Error canceling order:', error);
     res.status(500).json({ error: 'Failed to cancel order' });
   }
 });
+
 
 // Route to get the total number of orders
 router.get('/totalorders', async (req, res) => {

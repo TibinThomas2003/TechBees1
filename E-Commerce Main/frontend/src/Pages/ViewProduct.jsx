@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
 } from "@mui/material";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -22,23 +23,25 @@ import axios from "axios";
 
 const StyledBox = styled(Box)({
   display: "flex",
-  justifyContent: "center",
+  flexDirection: "column",
+  alignItems: "center",
   padding: "50px 0",
 });
 
-const ProductImagesBox = styled(Box)({
+const ProductContainer = styled(Box)({
   display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  marginRight: "50px",
+  alignItems: "flex-start",
+  justifyContent: "space-between",
+  width: "100%",
+  maxWidth: "800px",
+});
+
+const ProductImagesBox = styled(Box)({
+  width: "50%",
 });
 
 const ProductDetailsBox = styled(Box)({
-  display: "flex",
-  maxWidth: "400px",
-  maxHeight: "400px",
-  flexDirection: "column",
-  alignItems: "center",
+  width: "45%",
 });
 
 const AnimatedCard = styled(Card)({
@@ -55,13 +58,14 @@ const ViewProduct = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [quantity, setQuantity] = useState(1); // State to manage selected quantity
-  const [userEmail,setUserEmail] = useState(null); // Assuming you have access to the user's ID
-  const [showConfirmation, setShowConfirmation] = useState(false); // State to manage confirmation dialog visibility
+  const [quantity, setQuantity] = useState(1);
+  const [feedback, setFeedback] = useState("");
+  const [userEmail, setUserEmail] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const email = localStorage.getItem('userEmail');
+      const email = localStorage.getItem("userEmail");
       if (email) {
         setUserEmail(email);
       }
@@ -86,7 +90,6 @@ const ViewProduct = () => {
   }, [id]);
 
   const handleAddToCart = async () => {
-    // Show confirmation dialog before adding to cart
     setShowConfirmation(true);
   };
 
@@ -101,7 +104,7 @@ const ViewProduct = () => {
           description: product.description,
           image1: product.image1,
           quantity: quantity,
-          userEmail: userEmail, // Include the user's ID
+          userEmail: userEmail,
         }
       );
 
@@ -113,9 +116,36 @@ const ViewProduct = () => {
     } catch (error) {
       console.error("Error adding product to cart:", error);
     } finally {
-      setShowConfirmation(false); // Hide confirmation dialog after adding to cart
+      setShowConfirmation(false);
     }
   };
+
+  const handleSubmitFeedback = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/feedback/feedback", // Update the URL with your backend endpoint
+        {
+          productId: id,
+          userEmail: userEmail,
+          feedback: feedback,
+        }
+      );
+  
+      if (response.status === 201) {
+        console.log("Feedback submitted successfully");
+        // Optionally, you can show a message to the user indicating successful submission
+      } else {
+        throw new Error("Failed to submit feedback");
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      // Optionally, you can show a message to the user indicating failure
+    } finally {
+      setFeedback(""); // Clear the feedback field
+    }
+  };
+  
 
   if (loading) {
     return <CircularProgress />;
@@ -131,85 +161,114 @@ const ViewProduct = () => {
 
   return (
     <StyledBox>
-      <ProductImagesBox>
-        <Carousel
-          showArrows={true}
-          showStatus={false}
-          showThumbs={false}
-          width={600}
-        >
-          <div>
-            <img
-              src={product.image1}
-              alt={product.name}
-              style={{ width: "100%" }}
-            />
-          </div>
-          <div>
-            <img
-              src={product.image2}
-              alt={product.name}
-              style={{ width: "100%" }}
-            />
-          </div>
-          <div>
-            <img
-              src={product.image3}
-              alt={product.name}
-              style={{ width: "100%" }}
-            />
-          </div>
-        </Carousel>
-      </ProductImagesBox>
-      <ProductDetailsBox>
-        <AnimatedCard>
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {product.name}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {product.description}
-            </Typography>
-            <Typography variant="body1" color="primary" gutterBottom>
-              Price: ${product.price}
-            </Typography>
-            <Box display="flex" justifyContent="center" marginTop={2}>
-              <FormControl>
-                <Select
-                  value={quantity}
-                  onChange={(event) => setQuantity(event.target.value)}
-                >
-                  {[...Array(10).keys()].map((val) => (
-                    <MenuItem key={val + 1} value={val + 1}>
-                      {val + 1}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ marginLeft: 10 }}
-                onClick={handleAddToCart}
-              >
-                Add to Cart
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                component={Link}
-                to={{
-                  pathname: `/placeorder/${id}`,
-                  search: `?quantity=${quantity}`, 
-                }}
-              >
-                Buy Now
-              </Button>
-            </Box>
-          </CardContent>
-        </AnimatedCard>
-      </ProductDetailsBox>
-      {/* Confirmation Dialog */}
+      <ProductContainer>
+        <ProductImagesBox>
+          <Carousel
+            showArrows={true}
+            showStatus={false}
+            showThumbs={false}
+            width={300}
+          >
+            <div>
+              <img
+                src={product.image1}
+                alt={product.name}
+                style={{ width: "100%" }}
+              />
+            </div>
+            <div>
+              <img
+                src={product.image2}
+                alt={product.name}
+                style={{ width: "100%" }}
+              />
+            </div>
+            <div>
+              <img
+                src={product.image3}
+                alt={product.name}
+                style={{ width: "100%" }}
+              />
+            </div>
+          </Carousel>
+        </ProductImagesBox>
+        <ProductDetailsBox>
+          <AnimatedCard>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {product.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {product.description}
+              </Typography>
+              <Typography variant="body1" color="primary" gutterBottom>
+                Price: ${product.price}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Stock: {product.stock}
+              </Typography>
+              {product.stock === 0 ? (
+                <Typography variant="body1" color="error">
+                  OUT OF STOCK
+                </Typography>
+              ) : (
+                <Box display="flex" justifyContent="center" marginTop={2}>
+                  <FormControl>
+                    <Select
+                      value={quantity}
+                      onChange={(event) => setQuantity(event.target.value)}
+                    >
+                      {[...Array(10).keys()].map((val) => (
+                        <MenuItem key={val + 1} value={val + 1}>
+                          {val + 1}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ marginLeft: 10 }}
+                    onClick={handleAddToCart}
+                  >
+                    Add to Cart
+                  </Button>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    component={Link}
+                    to={{
+                      pathname: `/placeorder/${id}`,
+                      search: `?quantity=${quantity}`,
+                    }}
+                  >
+                    Buy Now
+                  </Button>
+                </Box>
+              )}
+            </CardContent>
+          </AnimatedCard>
+        </ProductDetailsBox>
+      </ProductContainer>
+      <Box mt={4} width="100%">
+        <Typography variant="h6">Give Feedback</Typography>
+        <form onSubmit={handleSubmitFeedback}>
+          <TextField
+            label="Your Feedback"
+            variant="outlined"
+            fullWidth
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            multiline
+            rows={4}
+            margin="normal"
+          />
+          <Button type="submit" variant="contained" color="primary">
+            Submit Feedback
+          </Button>
+        </form>
+      </Box>
       <Dialog
         open={showConfirmation}
         onClose={() => setShowConfirmation(false)}

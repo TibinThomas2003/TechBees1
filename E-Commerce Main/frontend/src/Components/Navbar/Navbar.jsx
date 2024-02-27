@@ -146,17 +146,6 @@ function ResponsiveAppBar({ cartItemCount, isLoggedIn, handleLogout }) {
             </>
           )}
         </Box>
-        <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-          <IconButton
-            size="large"
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Box>
       </Toolbar>
     </AppBar>
   );

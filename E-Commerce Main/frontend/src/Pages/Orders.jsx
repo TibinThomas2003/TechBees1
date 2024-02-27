@@ -49,6 +49,8 @@ const Orders = () => {
         throw new Error("Failed to fetch orders");
       }
       const orders = await response.json();
+      // Sort orders based on placement time (createdAt)
+      orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setOrders(orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -64,14 +66,17 @@ const Orders = () => {
         const response = await fetch(
           `http://localhost:5000/api/orders/cancelorder/${orderId}`,
           {
-            method: "DELETE",
+            method: "PUT",
           }
         );
         if (!response.ok) {
           throw new Error("Failed to cancel order");
         }
+        const updatedOrder = await response.json();
         setOrders((prevOrders) =>
-          prevOrders.filter((order) => order._id !== orderId)
+          prevOrders.map((order) =>
+            order._id === updatedOrder._id ? updatedOrder : order
+          )
         );
       } catch (error) {
         console.error("Error canceling order:", error);
@@ -95,7 +100,7 @@ const Orders = () => {
       ) : (
         orders.map((order) => (
           <OrderItem key={order._id}>
-            <Grid container alignItems="center">
+            <Grid container alignItems="center" spacing={2}>
               <Grid item xs={12} md={8}>
                 <Typography variant="h6">{order.productName}</Typography>
                 <Typography variant="body1" paragraph>
@@ -112,12 +117,13 @@ const Orders = () => {
                 <OrderStatus status={order.status}>
                   {order.status}
                 </OrderStatus>
+                <br />  
+                &nbsp;
                 {order.status !== "Delivered" && order.status !== "Canceled" && (
                   <Button
                     variant="contained"
                     color="error"
                     onClick={() => cancelOrder(order._id)}
-                    sx={{ mt: 1, width: { xs: "100%", md: "auto" } }} 
                   >
                     Cancel Order
                   </Button>

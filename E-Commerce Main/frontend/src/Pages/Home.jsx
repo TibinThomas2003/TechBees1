@@ -1,14 +1,15 @@
-import React from 'react';
-import img1 from '../Pages/Assets/PC1.png';
-import img2 from '../Pages/Assets/PC2.jpg';
-import img3 from '../Pages/Assets/PC3.jpg';
-import img4 from '../Pages/Assets/PC5.jpg';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import img1 from "../Pages/Assets/PC1.png";
+import img2 from "../Pages/Assets/PC2.jpg";
+import img3 from "../Pages/Assets/PC3.jpg";
+import img4 from "../Pages/Assets/PC5.jpg";
+import { Link } from "react-router-dom";
 
 const ExploreSection = styled.div`
   text-align: center;
   margin: 30px;
+  padding: 30px;
 `;
 
 const ProductGrid = styled.div`
@@ -18,6 +19,7 @@ const ProductGrid = styled.div`
   margin: 30px;
   height: 1100px;
   padding: 20px;
+   
 `;
 
 const ProductCard = styled.div`
@@ -29,12 +31,13 @@ const ProductCard = styled.div`
   transition: transform 0.3s ease-in-out;
   cursor: pointer;
   background-color: #fff;
+  padding: 20px; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const ProductImage = styled.img`
   width: 100%;
-  max-height: 400px;
+  height: 250px; /* Add a fixed height */
   border-radius: 8px 8px 0 0;
   margin-bottom: 15px;
   margin-top: 20px;
@@ -45,6 +48,9 @@ const ProductImage = styled.img`
 const ProductDescription = styled.p`
   font-size: 16px;
   margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const ProductPrice = styled.p`
@@ -91,46 +97,42 @@ const Category = styled.div`
 `;
 
 const Home = () => {
-  const products = [
-    {
-      id: 1,
-      image: img1,
-      description: 'Product 1 description',
-      price: '$999.99',
-    },
-    {
-      id: 2,
-      image: img2,
-      description: 'Product 2 description',
-      price: '$1299.99',
-    },
-    {
-      id: 3,
-      image: img3,
-      description: 'Product 3 description',
-      price: '$1299.99',
-    },
-    {
-      id: 4,
-      image: img2,
-      description: 'Product 4 description',
-      price: '$1299.99',
-    },
-    {
-      id: 5,
-      image: img1,
-      description: 'Product 5 description',
-      price: '$1299.99',
-    },
-  ];
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/home/products");
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   return (
     <div>
-      <br /><br />
+      <br />
+      <br />
       <div className="mx-auto text-center">
-        <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel" data-interval="3000">
+        <div
+          id="carouselExampleIndicators"
+          className="carousel slide"
+          data-ride="carousel"
+          data-interval="3000"
+        >
           <ol className="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
+            <li
+              data-target="#carouselExampleIndicators"
+              data-slide-to="0"
+              className="active"
+            ></li>
             <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
             <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
             <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
@@ -149,12 +151,28 @@ const Home = () => {
               <ProductImage src={img4} alt="Carousel 4" />
             </div>
           </div>
-          <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+          <a
+            className="carousel-control-prev"
+            href="#carouselExampleIndicators"
+            role="button"
+            data-slide="prev"
+          >
+            <span
+              className="carousel-control-prev-icon"
+              aria-hidden="true"
+            ></span>
             <span className="sr-only">Previous</span>
           </a>
-          <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+          <a
+            className="carousel-control-next"
+            href="#carouselExampleIndicators"
+            role="button"
+            data-slide="next"
+          >
+            <span
+              className="carousel-control-next-icon"
+              aria-hidden="true"
+            ></span>
             <span className="sr-only">Next</span>
           </a>
         </div>
@@ -164,22 +182,32 @@ const Home = () => {
         <h2>Categories</h2>
         <CategorySection>
           <Category>
-            <h3><Link to="/viewcategory/PC_Office">Office Use PC</Link></h3>
+            <h3>
+              <Link to="/viewcategory/PC_Office">Office Use PC</Link>
+            </h3>
           </Category>
           <Category>
-            <h3><Link to="/viewcategory/PC_Gaming">Gaming PC</Link></h3>
+            <h3>
+              <Link to="/viewcategory/PC_Gaming">Gaming PC</Link>
+            </h3>
           </Category>
         </CategorySection>
       </CategoriesSection>
 
       <ExploreSection>
-        <h2>Explore Our Creative PCs</h2>
+        <h2>Explore Our Great Products</h2>
         <ProductGrid>
           {products.map((product) => (
-            <ProductCard key={product.id}>
+            <ProductCard key={product._id}>
               <ProductImage src={product.image} alt={`Product ${product.id}`} />
-              <ProductDescription>{product.description}</ProductDescription>
-              <ProductPrice>{product.price}</ProductPrice>
+              <ProductDescription>
+  {product.description &&
+    (product.description.length > 50
+      ? `${product.description.substring(0, 70)}...`
+      : product.description)}
+</ProductDescription>
+
+              <ProductPrice> ₹ {product.price}</ProductPrice>
               <BuyNowButton>Buy Now</BuyNowButton>
             </ProductCard>
           ))}

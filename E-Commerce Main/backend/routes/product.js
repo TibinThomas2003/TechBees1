@@ -66,6 +66,31 @@ router.get('/admin/viewproducts', async (req, res) => {
 });
 
 
+
+router.post('/admin/updatehome', async (req, res) => {
+  try {
+    // Extract selected product details from the request body
+    const selectedProductDetails = req.body;
+
+    // Validate that selectedProductDetails is an array
+    if (!Array.isArray(selectedProductDetails)) {
+      return res.status(400).json({ error: 'Selected product details must be an array' });
+    }
+
+    // Clear existing home products
+    await Product.deleteMany({ name: 'home' });
+
+    // Insert selected products as home products
+    const insertedProducts = await Product.insertMany(selectedProductDetails.map(product => ({ ...product, name: 'home' })));
+
+    res.status(200).json({ message: 'Home products updated successfully', products: insertedProducts });
+  } catch (error) {
+    console.error('Error updating home products:', error);
+    res.status(500).json({ error: 'Failed to update home products' });
+  }
+});
+
+
 // Update a product by ID
 router.put('/update/:id', async (req, res) => {
   const productId = req.params.id;

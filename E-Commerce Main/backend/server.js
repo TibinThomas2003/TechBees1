@@ -34,21 +34,29 @@ app.get('/', (req, res) => {
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
-// route for product
+// Route for product
 const productRoute = require('./routes/product');
 app.use("/api/product", productRoute);
 
-// route for cart
+// Route for home products
+const homeRoute = require('./routes/home');
+app.use("/api/home", homeRoute);
+
+// Route for cart
 const cartRoute = require('./routes/cart');
 app.use("/api/cart", cartRoute);
 
-// route for order
+// Route for order
 const orderRoute = require('./routes/order');
 app.use('/api/orders', orderRoute); 
 
 // Route for categories
 const categoryRoute = require('./routes/category'); // Import the category route file
 app.use('/api/category', categoryRoute); // Use the category route
+
+// Route for feedback
+const feedbackRoute = require('./routes/feedback'); // Import the feedback route file
+app.use('/api/feedback', feedbackRoute); // Use the feedback route
 
 app.listen(port, () => {
     console.log(`Server is up and running on port ${port}`);
