@@ -1,100 +1,137 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import img1 from "../Pages/Assets/PC1.png";
-import img2 from "../Pages/Assets/PC2.jpg";
-import img3 from "../Pages/Assets/PC3.jpg";
-import img4 from "../Pages/Assets/PC5.jpg";
 import { Link } from "react-router-dom";
+
+// Import your images here 
+import img1 from "../Components/Assets/b1.jpg";
+import img2 from "../Components/Assets/bg2.jpeg"; 
+import img3 from "../Components/Assets/bg3.jpeg";
+import officePCImg from "../Components/Assets/officepc.png";
+import gamingPCImg from "../Components/Assets/gamingpc.png";
 
 const ExploreSection = styled.div`
   text-align: center;
-  margin: 30px;
-  padding: 10px; /* Reduce padding */
+  padding: 50px 0;
 `;
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(250px, 1fr)
-  ); /* Reduce minmax value */
-  gap: 10px; /* Reduce gap */
-  margin: 20px; /* Reduce margin */
-  padding: 10px; /* Reduce padding */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin: 100px;
+  padding: 10px;
 `;
 
 const ProductCard = styled.div`
   position: relative;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 10px; /* Reduce margin */
+  border-radius: 12px;
+  height:400px;
   overflow: hidden;
   transition: transform 0.3s ease-in-out;
-  cursor: pointer;
   background-color: #fff;
-  padding: 10px; /* Reduce padding */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-5px);
+  }
 `;
 
 const ProductImage = styled.img`
   width: 100%;
-  height: 180px; /* Reduce height */
-  border-radius: 8px 8px 0 0;
-  object-fit: contain;/
+  height: 200px;
+  object-fit: cover;
 `;
 
 const ProductDescription = styled.p`
-  font-size: 14px; /* Reduce font size */
-  margin-bottom: 5px; /* Reduce margin */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 16px;
+  margin: 10px 0;
 `;
 
 const ProductPrice = styled.p`
-  font-size: 16px; /* Reduce font size */
+  font-size: 18px;
   font-weight: bold;
   color: #4caf50;
-  margin-bottom: 5px; /* Reduce margin */
-`;
+`
 
 const BuyNowButton = styled(Link)`
-  color: #f9f9f9;
+  display: inline-block;
   background-color: #0375c1;
-  padding: 8px 16px; /* Reduce padding */
+  padding: 8px 16px;
   border: 2px solid #0375c1;
   border-radius: 5px;
+  margin-top: 10px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-  text-decoration: none; /* Remove default underline */
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+  text-decoration: none;
+  color: #f9f9f9;
 
   &:hover {
     background-color: #004b7f;
+    transform: scale(1.05);
   }
 `;
 
 const CategoriesSection = styled.div`
   text-align: center;
-  margin: 30px;
+  padding: 50px 0;
 `;
 
 const CategorySection = styled.div`
   display: flex;
-  justify-content: space-around;
-  margin: 30px;
-  
+  justify-content: center;
+  gap: 20px;
 `;
 
+const CategoryText = styled.div`
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+`;
+
+
 const Category = styled.div`
-  border: 2px solid #000;
-  padding: 20px;
-  border-radius: 10px;
-  width: auto;
-  height: auto;
-  transition: transform 0.3s ease-in-out; /* Add transition for hover effect */
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+
   &:hover {
-    transform: scale(1.05); /* Scale up on hover */
+    transform: scale(1.05);
   }
+`;
+
+const CategoryImage = styled.img`
+  width: 100%;
+  height: 250px; /* Adjust this height as needed */
+  object-fit: cover;
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const OverlayText = styled.div`
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
 `;
 
 const Home = () => {
@@ -119,49 +156,36 @@ const Home = () => {
 
   return (
     <div>
-      <br />
-      <br />
-      <div className="mx-auto text-center">
+      <div className="carousel-container mx-auto text-center position-relative">
+        
         <div
           id="carouselExampleIndicators"
           className="carousel slide"
           data-ride="carousel"
-          data-interval="3000"
+          data-interval="2000"
         >
-          <ol className="carousel-indicators">
-            <li
-              data-target="#carouselExampleIndicators"
-              data-slide-to="0"
-              className="active"
-            ></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
-          </ol>
           <div className="carousel-inner">
             <div className="carousel-item active">
-              <ProductImage src={img1} alt="Carousel 1" />
+              <img className="d-block w-100" src={img1} alt="Carousel 1" />
             </div>
             <div className="carousel-item">
-              <ProductImage src={img2} alt="Carousel 2" />
+              <img className="d-block w-100" src={img2} alt="Carousel 2" />
             </div>
             <div className="carousel-item">
-              <ProductImage src={img3} alt="Carousel 3" />
-            </div>
-            <div className="carousel-item">
-              <ProductImage src={img4} alt="Carousel 4" />
+              <img className="d-block w-100" src={img3} alt="Carousel 3" />
             </div>
           </div>
+          <Overlay>
+          <OverlayText>Welcome To TechBees<br/>Discover Our Latest Collection</OverlayText>
+          <BuyNowButton to="" className="btn btn-primary">Explore Now</BuyNowButton>
+        </Overlay>
           <a
             className="carousel-control-prev"
             href="#carouselExampleIndicators"
             role="button"
             data-slide="prev"
           >
-            <span
-              className="carousel-control-prev-icon"
-              aria-hidden="true"
-            ></span>
+            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
             <span className="sr-only">Previous</span>
           </a>
           <a
@@ -170,33 +194,34 @@ const Home = () => {
             role="button"
             data-slide="next"
           >
-            <span
-              className="carousel-control-next-icon"
-              aria-hidden="true"
-            ></span>
+            <span className="carousel-control-next-icon" aria-hidden="true"></span>
             <span className="sr-only">Next</span>
           </a>
         </div>
       </div>
 
       <CategoriesSection>
-        <h2>Categories</h2>
+        <h2>Explore by Category</h2>
+        <br /><br />
         <CategorySection>
-          <Link to="/viewcategory/PC_Office">
+          <Link to="/viewcategory/PC_Office" style={{ textDecoration: "none" }}>
             <Category>
-              <h3>Office Use PC</h3>
+              <CategoryImage src={officePCImg} alt="Office PC" />
+              <CategoryText>Office Use PC</CategoryText>
             </Category>
           </Link>
-          <Link to="/viewcategory/PC_Gaming">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Link to="/viewcategory/PC_Gaming" style={{ textDecoration: "none" }}>
             <Category>
-              <h3>Gaming PC</h3>
+              <CategoryImage src={gamingPCImg} alt="Gaming PC" />
+              <CategoryText>Gaming PC</CategoryText>
             </Category>
           </Link>
         </CategorySection>
       </CategoriesSection>
 
       <ExploreSection>
-        <h3>Explore Our Great Products</h3>
+        <h2>Explore Our Great Products</h2>
         <ProductGrid>
           {products.map((product) => (
             <ProductCard key={product._id}>
@@ -207,12 +232,8 @@ const Home = () => {
                     ? `${product.description.substring(0, 70)}...`
                     : product.description)}
               </ProductDescription>
-
               <ProductPrice> ₹ {product.price}</ProductPrice>
-              <br />
-              <BuyNowButton>Buy Now</BuyNowButton>
-              <br />
-              <br />
+              <BuyNowButton to={`/viewproduct/${product._id}`}>Buy Now</BuyNowButton>
             </ProductCard>
           ))}
         </ProductGrid>

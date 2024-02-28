@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLinkedin, faTwitter, faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { Container, Typography, Grid, TextField, TextareaAutosize, Button } from '@mui/material';
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    message: '',
+    file: null
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    const { name, value, files } = e.target;
+    if (name === 'file') {
+      setFormData({
+        ...formData,
+        file: files[0]
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -25,134 +34,88 @@ export const Contact = () => {
     setFormData({
       name: '',
       email: '',
-      message: ''
+      message: '',
+      file: null
     });
   };
 
-  const styles = {
-    contactContainer: {
-      maxWidth: '600px',
-      margin: '0 auto',
-      padding: '20px',
-      backgroundColor: '#f4f4f4',
-      borderRadius: '8px',
-      boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.1)',
-    },
-    contactHeading: {
-      textAlign: 'center',
-      color: '#333',
-      fontSize: '28px',
-      marginBottom: '30px',
-      textTransform: 'uppercase',
-    },
-    formGroup: {
-      marginBottom: '20px',
-    },
-    label: {
-      display: 'block',
-      marginBottom: '5px',
-      color: '#555',
-      fontSize: '16px',
-    },
-    inputField: {
-      width: '100%',
-      padding: '10px',
-      border: '1px solid #ccc',
-      borderRadius: '4px',
-      fontSize: '16px',
-    },
-    messageField: {
-      height: '100px',
-    },
-    submitBtn: {
-      display: 'block',
-      width: '100%',
-      padding: '10px',
-      backgroundColor: '#007bff',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontSize: '18px',
-      transition: 'background-color 0.3s ease',
-    },
-    socialMediaIcons: {
-      textAlign: 'center',
-      marginTop: '20px',
-    },
-    iconLink: {
-      margin: '0 10px',
-      fontSize: '24px',
-      color: '#007bff', // Change color if needed
-      textDecoration: 'none',
-      transition: 'color 0.3s ease',
-    }
-  };
-
   return (
-    <div style={styles.contactContainer}>
-      <h2 style={styles.contactHeading}>Get in Touch</h2>
+    <Container maxWidth="md" sx={{ mt: 5 }}>
+      <Typography variant="h2" align="center" gutterBottom>
+        Get in Touch
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <div style={styles.formGroup}>
-          <label htmlFor="name" style={styles.label}>Your Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            style={styles.inputField}
-            placeholder="Enter your name"
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label htmlFor="email" style={styles.label}>Your Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            style={styles.inputField}
-            placeholder="Enter your email"
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label htmlFor="message" style={styles.label}>Your Message</label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-            style={{ ...styles.inputField, ...styles.messageField }}
-            placeholder="Enter your message"
-          />
-        </div>
-        <button type="submit" style={styles.submitBtn}>Send Message</button>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              type="text"
+              id="name"
+              name="name"
+              label="Your Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              placeholder="Enter your name"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              type="email"
+              id="email"
+              name="email"
+              label="Your Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              placeholder="Enter your email"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextareaAutosize
+              fullWidth
+              id="message"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+              minRows={5}
+              placeholder="Enter your message"
+              style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '16px' }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <input
+              type="file"
+              id="file"
+              name="file"
+              accept="image/*, video/*"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Send Message
+            </Button>
+          </Grid>
+        </Grid>
       </form>
-      <div style={styles.socialMediaIcons}>
-        <a
-          href="https://www.linkedin.com/"
-          style={styles.iconLink}
-        >
-          <FontAwesomeIcon icon={faLinkedin} />
-        </a>
-        <a
-          href="https://twitter.com/"
-          style={styles.iconLink}
-        >
-          <FontAwesomeIcon icon={faTwitter} />
-        </a>
-        <a
-          href="https://www.facebook.com/"
-          style={styles.iconLink}
-        >
-          <FontAwesomeIcon icon={faFacebook} />
-        </a>
-      </div>
-    </div>
+      <Grid container justifyContent="center" sx={{ marginTop: '20px' }}>
+        <Grid item>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faLinkedin} style={{ fontSize: '24px', color: '#007bff', marginRight: '10px' }} />
+          </a>
+          <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faTwitter} style={{ fontSize: '24px', color: '#007bff', marginRight: '10px' }} />
+          </a>
+          <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faFacebook} style={{ fontSize: '24px', color: '#007bff' }} />
+          </a>
+        </Grid>
+      </Grid>
+    </Container>
   );
 };

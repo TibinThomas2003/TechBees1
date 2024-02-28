@@ -156,7 +156,12 @@ export const AdminViewOrders = () => {
         throw new Error('Failed to fetch orders');
       }
       const data = await response.json();
-      setOrders(data);
+      // Sort orders based on priority order: Processing > Shipped > Delivered > Canceled
+      const sortedOrders = data.sort((a, b) => {
+        const priorityOrder = ['Processing', 'Shipped', 'Delivered', 'Canceled'];
+        return priorityOrder.indexOf(a.status) - priorityOrder.indexOf(b.status);
+      });
+      setOrders(sortedOrders);
     } catch (error) {
       console.error('Error fetching orders:', error);
     }

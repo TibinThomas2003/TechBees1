@@ -11,6 +11,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import { NavLink } from 'react-router-dom';
+import logo from '../Assets/bees.png';
 
 function ResponsiveAppBar({ cartItemCount, isLoggedIn, handleLogout }) {
   const userEmail = localStorage.getItem('userEmail');
@@ -31,7 +32,8 @@ function ResponsiveAppBar({ cartItemCount, isLoggedIn, handleLogout }) {
   return (
     <AppBar position="static">
       <Toolbar sx={{ justifyContent: 'space-between' }}>
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <img  src={logo} alt="TechBees Logo" style={{filter: 'drop-shadow(1px 2px 3px #222)', width: '50px', marginRight: '10px' }} /> {/* Logo */}
           <Typography
             variant="h6"
             noWrap

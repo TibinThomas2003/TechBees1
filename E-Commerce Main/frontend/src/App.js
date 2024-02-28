@@ -31,6 +31,7 @@ function App() {
   const [userId, setUserId] = useState(null); // Add state for user ID
 
   useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
     const userSession = localStorage.getItem("userSession");
     if (userSession) {
       const user = JSON.parse(userSession);
@@ -100,46 +101,46 @@ function App() {
           <Route path="/placeordercart" element={<PlaceOrderCart />} />
 
           {/* Protected admin routes */}
-          {isAdminLoggedIn ==="admin@gmail.com" && (
-    <>
-      <Route
-        path="/admindashboard"
-        element={<AdminDashboard handleLogout={handleLogout} />}
-      />
-      <Route
-        path="/adminaddproduct"
-        element={<AdminAddProduct />}
-      />
-      <Route
-        path="/adminviewallusers"
-        element={<AdminViewAllUsers />}
-      />
-      <Route
-        path="/adminviewallproduct"
-        element={<AdminViewAllProduct />}
-      />
-      <Route
-        path="/adminupdateproduct/:productId"
-        element={<AdminUpdateProduct />}
-      />
-      <Route
-        path="/adminvieworders"
-        element={<AdminViewOrders />}
-      />
-      <Route
-        path="/adminmanagehome"
-        element={<AdminManageHome />}
-      />
-    </>
-  )}
-  <Route
-    path="*"
-    element={!isAdminLoggedIn ? <Navigate to="/login" /> : null}
-  />
-          </Routes>
+          {isAdminLoggedIn === "admin@gmail.com" && (
+            <>
+              <Route
+                path="/admindashboard"
+                element={<AdminDashboard handleLogout={handleLogout} />}
+              />
+              <Route
+                path="/adminaddproduct"
+                element={<AdminAddProduct />}
+              />
+              <Route
+                path="/adminviewallusers"
+                element={<AdminViewAllUsers />}
+              />
+              <Route
+                path="/adminviewallproduct"
+                element={<AdminViewAllProduct />}
+              />
+              <Route
+                path="/adminupdateproduct/:productId"
+                element={<AdminUpdateProduct />}
+              />
+              <Route
+                path="/adminvieworders"
+                element={<AdminViewOrders />}
+              />
+              <Route
+                path="/adminmanagehome"
+                element={<AdminManageHome />}
+              />
+            </>
+          )}
+          <Route
+            path="*"
+            element={!isAdminLoggedIn ? <Navigate to="/login" /> : null}
+          />
+        </Routes>
       </div>
       &nbsp;&nbsp;
-      <Footer />
+      {isAdminLoggedIn !== "admin@gmail.com" && <Footer />}
     </Router>
   );
 

@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Grid, Paper, Button } from "@mui/material";
+import { Container, Typography, Grid, Paper, Button, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const OrderItem = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  marginBottom: theme.spacing(2),
+  display: "flex", 
+  width: "100%",
+  padding: theme.spacing(3), 
+  marginBottom: theme.spacing(3),
+  borderRadius: theme.spacing(2),
+  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
   "&:hover": {
     transform: "translateY(-5px)",
-    boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
   },
 }));
 
@@ -39,7 +44,7 @@ const OrderStatus = styled("div")(({ theme, status }) => ({
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage] = useState(4); // Number of orders per page
+  const ordersPerPage = 4; // Number of orders per page
   const userEmail = localStorage.getItem("userEmail");
 
   const fetchOrders = async () => {
@@ -83,6 +88,7 @@ const Orders = () => {
       } catch (error) {
         console.error("Error canceling order:", error);
       }
+      window.location.reload()
     }
   };
 
@@ -99,8 +105,8 @@ const Orders = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Typography variant="h4" align="center" gutterBottom>
+    <Container maxWidth="lg" sx={{ mt: 5 }}>
+      <Typography variant="h3" align="center" gutterBottom>
         Your Orders
       </Typography>
       {currentOrders.length === 0 ? (
@@ -110,9 +116,9 @@ const Orders = () => {
       ) : (
         currentOrders.map((order) => (
           <OrderItem key={order._id}>
-            <Grid container alignItems="center" spacing={2}>
-              <Grid item xs={12} md={8}>
-                <Typography variant="h6">{order.productName}</Typography>
+            <Grid container alignItems="center" spacing={3}>
+              <Grid item xs={12} sm={8} sx={{ width: "100%" }}>
+                <Typography variant="h5">{order.productName}</Typography>
                 <Typography variant="body1" paragraph>
                   Shipping Address: {order.shippingAddress}
                 </Typography>
@@ -123,31 +129,30 @@ const Orders = () => {
                   Total Value: ${order.totalValue.toFixed(2)}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  Placed on: {order.createdAt}
+                  Placed on: {new Date(order.createdAt).toLocaleString()}
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} sm={4}>
                 <OrderStatus status={order.status}>
                   {order.status}
-                </OrderStatus>
+                </OrderStatus >
                 <br />  
-                &nbsp;
                 {order.status !== "Delivered" && order.status !== "Canceled" && (
-                  <Button
-                    variant="contained"
+                  <IconButton 
                     color="error"
+                    aria-label="Cancel Order"
                     onClick={() => cancelOrder(order._id)}
                   >
-                    Cancel Order
-                  </Button>
+                    <CancelIcon />
+                  </IconButton>
                 )}
               </Grid>
             </Grid>
           </OrderItem>
         ))
       )}
-      {orders.length > 3 && (
-        <div style={{ marginTop: 20, textAlign: "center" }}>
+      {orders.length > ordersPerPage && (
+        <Grid container justifyContent="center" style={{ marginTop: 20 }}>
           <Button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
@@ -157,7 +162,7 @@ const Orders = () => {
           <Button onClick={() => paginate(currentPage + 1)}>
             Next
           </Button>
-        </div>
+        </Grid>
       )}
     </Container>
   );
