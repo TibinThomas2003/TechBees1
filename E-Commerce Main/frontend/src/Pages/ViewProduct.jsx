@@ -15,11 +15,20 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  IconButton, // Import IconButton
 } from "@mui/material";
+import { AddShoppingCart } from "@mui/icons-material"; // Import AddShoppingCart icon
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { styled } from "@mui/system";
 import axios from "axios";
+
+// Styled components
 
 const StyledBox = styled(Box)({
   display: "flex",
@@ -53,6 +62,8 @@ const AnimatedCard = styled(Card)({
   },
 });
 
+// ViewProduct component
+
 const ViewProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -62,6 +73,7 @@ const ViewProduct = () => {
   const [feedback, setFeedback] = useState("");
   const [userEmail, setUserEmail] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -87,6 +99,21 @@ const ViewProduct = () => {
     };
 
     fetchProduct();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/feedback/product/${id}`
+        );
+        setFeedbacks(response.data);
+      } catch (error) {
+        console.error("Error fetching feedbacks:", error);
+      }
+    };
+
+    fetchFeedbacks();
   }, [id]);
 
   const handleAddToCart = async () => {
@@ -131,7 +158,7 @@ const ViewProduct = () => {
           feedback: feedback,
         }
       );
-  
+
       if (response.status === 201) {
         console.log("Feedback submitted successfully");
         // Optionally, you can show a message to the user indicating successful submission
@@ -145,7 +172,6 @@ const ViewProduct = () => {
       setFeedback(""); // Clear the feedback field
     }
   };
-  
 
   if (loading) {
     return <CircularProgress />;
@@ -199,10 +225,17 @@ const ViewProduct = () => {
                 {product.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {product.description}
+                {product.description.split(". ").map((sentence, index) => (
+                  <span key={index}>
+                    {index !== 0 && <br />}{" "}
+                    {/* Add line break except for the first sentence */}
+                    &bull; {sentence.trim()}
+                  </span>
+                ))}
               </Typography>
+
               <Typography variant="body1" color="primary" gutterBottom>
-                Price: ${product.price}
+                Price: ₹{product.price}
               </Typography>
               <Typography variant="body1" gutterBottom>
                 Stock: {product.stock}
@@ -225,14 +258,6 @@ const ViewProduct = () => {
                       ))}
                     </Select>
                   </FormControl>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ marginLeft: 10 }}
-                    onClick={handleAddToCart}
-                  >
-                    Add to Cart
-                  </Button>
                   &nbsp;&nbsp;&nbsp;&nbsp;
                   <Button
                     variant="contained"
@@ -245,6 +270,22 @@ const ViewProduct = () => {
                   >
                     Buy Now
                   </Button>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <IconButton
+                    color="secondary"
+                    aria-label="add to shopping cart"
+                    onClick={handleAddToCart}
+                    sx={{
+                      border: "2px solid #ccc", // Example border style
+                      borderRadius: "50%", // Example border radius to make it circular
+                      padding: "10px", // Example padding
+                      "&:hover": {
+                        borderColor: "#999", // Example border color on hover
+                      },
+                    }}
+                  >
+                    <AddShoppingCart />
+                  </IconButton>
                 </Box>
               )}
             </CardContent>
@@ -252,7 +293,9 @@ const ViewProduct = () => {
         </ProductDetailsBox>
       </ProductContainer>
       <Box mt={4} width="100%">
-        <Typography variant="h6">Give Feedback</Typography>
+        <center>
+          <Typography variant="h4">Feedback</Typography>
+        </center>
         <form onSubmit={handleSubmitFeedback}>
           <TextField
             label="Your Feedback"
@@ -264,10 +307,32 @@ const ViewProduct = () => {
             rows={4}
             margin="normal"
           />
+
           <Button type="submit" variant="contained" color="primary">
             Submit Feedback
           </Button>
         </form>
+      </Box>
+      <Box mt={4} width="100%">
+        <Typography variant="h5" gutterBottom>
+          Feedbacks:
+        </Typography>
+        <List>
+          {feedbacks.map((feedback, index) => (
+            <ListItem key={index}>
+              <ListItemAvatar>
+                <Avatar
+                  alt={feedback.userEmail}
+                  src="/static/images/avatar/1.jpg"
+                />
+              </ListItemAvatar>
+              <ListItemText
+                primary={feedback.userEmail}
+                secondary={feedback.feedback}
+              />
+            </ListItem>
+          ))}
+        </List>
       </Box>
       <Dialog
         open={showConfirmation}

@@ -22,4 +22,17 @@ router.post('/feedback', async (req, res) => {
   }
 });
 
+// Get feedbacks for a product
+router.get('/product/:productId', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const feedbacks = await Feedback.find({ productId });
+    res.json(feedbacks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 module.exports = router;
+

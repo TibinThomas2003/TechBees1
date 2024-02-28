@@ -38,6 +38,8 @@ const OrderStatus = styled("div")(({ theme, status }) => ({
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(4); // Number of orders per page
   const userEmail = localStorage.getItem("userEmail");
 
   const fetchOrders = async () => {
@@ -88,23 +90,34 @@ const Orders = () => {
     fetchOrders();
   }, [userEmail]);
 
+  // Get current orders
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" align="center" gutterBottom>
         Your Orders
       </Typography>
-      {orders.length === 0 ? (
+      {currentOrders.length === 0 ? (
         <Typography variant="subtitle1" align="center">
           You haven't placed any orders yet. Start shopping now!
         </Typography>
       ) : (
-        orders.map((order) => (
+        currentOrders.map((order) => (
           <OrderItem key={order._id}>
             <Grid container alignItems="center" spacing={2}>
               <Grid item xs={12} md={8}>
                 <Typography variant="h6">{order.productName}</Typography>
                 <Typography variant="body1" paragraph>
                   Shipping Address: {order.shippingAddress}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  Quantity: {order.quantity}
                 </Typography>
                 <Typography variant="body1">
                   Total Value: ${order.totalValue.toFixed(2)}
@@ -132,6 +145,19 @@ const Orders = () => {
             </Grid>
           </OrderItem>
         ))
+      )}
+      {orders.length > 3 && (
+        <div style={{ marginTop: 20, textAlign: "center" }}>
+          <Button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          <Button onClick={() => paginate(currentPage + 1)}>
+            Next
+          </Button>
+        </div>
       )}
     </Container>
   );

@@ -9,65 +9,64 @@ import { Link } from "react-router-dom";
 const ExploreSection = styled.div`
   text-align: center;
   margin: 30px;
-  padding: 30px;
+  padding: 10px; /* Reduce padding */
 `;
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  margin: 30px;
-  height: 1100px;
-  padding: 20px;
-   
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(250px, 1fr)
+  ); /* Reduce minmax value */
+  gap: 10px; /* Reduce gap */
+  margin: 20px; /* Reduce margin */
+  padding: 10px; /* Reduce padding */
 `;
 
 const ProductCard = styled.div`
   position: relative;
   border: 1px solid #ddd;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  border-radius: 8px;
+  margin-bottom: 10px; /* Reduce margin */
   overflow: hidden;
   transition: transform 0.3s ease-in-out;
   cursor: pointer;
   background-color: #fff;
-  padding: 20px; 
+  padding: 10px; /* Reduce padding */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const ProductImage = styled.img`
   width: 100%;
-  height: 250px; /* Add a fixed height */
+  height: 180px; /* Reduce height */
   border-radius: 8px 8px 0 0;
-  margin-bottom: 15px;
-  margin-top: 20px;
-  object-fit: contain;
-  transition: transform 0.3s ease-in-out;
+  object-fit: contain;/
 `;
 
 const ProductDescription = styled.p`
-  font-size: 16px;
-  margin-bottom: 10px;
+  font-size: 14px; /* Reduce font size */
+  margin-bottom: 5px; /* Reduce margin */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
 
 const ProductPrice = styled.p`
-  font-size: 18px;
+  font-size: 16px; /* Reduce font size */
   font-weight: bold;
   color: #4caf50;
-  margin-bottom: 15px;
+  margin-bottom: 5px; /* Reduce margin */
 `;
 
-const BuyNowButton = styled.button`
+const BuyNowButton = styled(Link)`
   color: #f9f9f9;
   background-color: #0375c1;
-  padding: 10px 20px;
+  padding: 8px 16px; /* Reduce padding */
   border: 2px solid #0375c1;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
+  text-decoration: none; /* Remove default underline */
 
   &:hover {
     background-color: #004b7f;
@@ -83,16 +82,18 @@ const CategorySection = styled.div`
   display: flex;
   justify-content: space-around;
   margin: 30px;
+  
 `;
 
 const Category = styled.div`
   border: 2px solid #000;
   padding: 20px;
   border-radius: 10px;
-  transition: transform 0.3s ease-in-out;
-
+  width: auto;
+  height: auto;
+  transition: transform 0.3s ease-in-out; /* Add transition for hover effect */
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.05); /* Scale up on hover */
   }
 `;
 
@@ -181,34 +182,37 @@ const Home = () => {
       <CategoriesSection>
         <h2>Categories</h2>
         <CategorySection>
-          <Category>
-            <h3>
-              <Link to="/viewcategory/PC_Office">Office Use PC</Link>
-            </h3>
-          </Category>
-          <Category>
-            <h3>
-              <Link to="/viewcategory/PC_Gaming">Gaming PC</Link>
-            </h3>
-          </Category>
+          <Link to="/viewcategory/PC_Office">
+            <Category>
+              <h3>Office Use PC</h3>
+            </Category>
+          </Link>
+          <Link to="/viewcategory/PC_Gaming">
+            <Category>
+              <h3>Gaming PC</h3>
+            </Category>
+          </Link>
         </CategorySection>
       </CategoriesSection>
 
       <ExploreSection>
-        <h2>Explore Our Great Products</h2>
+        <h3>Explore Our Great Products</h3>
         <ProductGrid>
           {products.map((product) => (
             <ProductCard key={product._id}>
               <ProductImage src={product.image} alt={`Product ${product.id}`} />
               <ProductDescription>
-  {product.description &&
-    (product.description.length > 50
-      ? `${product.description.substring(0, 70)}...`
-      : product.description)}
-</ProductDescription>
+                {product.description &&
+                  (product.description.length > 50
+                    ? `${product.description.substring(0, 70)}...`
+                    : product.description)}
+              </ProductDescription>
 
               <ProductPrice> ₹ {product.price}</ProductPrice>
+              <br />
               <BuyNowButton>Buy Now</BuyNowButton>
+              <br />
+              <br />
             </ProductCard>
           ))}
         </ProductGrid>

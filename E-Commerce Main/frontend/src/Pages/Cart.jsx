@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Typography, Grid, Card, CardMedia, IconButton, Button } from "@mui/material";
-import { Delete as DeleteIcon, Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
+import { Link } from 'react-router-dom';
+
+import {
+  Typography,
+  Grid,
+  Card,
+  CardMedia,
+  IconButton,
+  Button,
+} from "@mui/material";
+import {
+  Delete as DeleteIcon,
+  Add as AddIcon,
+  Remove as RemoveIcon,
+} from "@mui/icons-material";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -22,8 +35,8 @@ const BuyNowButton = styled(Button)`
   && {
     background-color: #f50057; /* Pink */
     color: white;
-    width:100px;
-    height:40px;
+    width: 100px;
+    height: 40px;
     padding: 15px 30px;
     border-radius: 20px;
     font-weight: bold;
@@ -105,6 +118,11 @@ const Cart = ({ history }) => {
       .toFixed(2);
   };
 
+  const handleProceedToPayment = () => {
+    // Add your logic here for proceeding to the payment page
+    console.log("Proceeding to payment...");
+  };
+
   return (
     <Container>
       <br />
@@ -115,6 +133,14 @@ const Cart = ({ history }) => {
               <strong>Subtotal:</strong> ₹{calculateSubtotal()}
             </Typography>
           </center>
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to="/placeordercart"
+          >
+            Proceed to Payment
+          </Button>
         </>
       )}
 
@@ -162,7 +188,10 @@ const Cart = ({ history }) => {
                       <strong>User Email:</strong> {item.userEmail}
                     </Typography>
                     <br />
-                    <BuyNowButton variant="contained" onClick={() => handleBuyNow(item)}>
+                    <BuyNowButton
+                      variant="contained"
+                      onClick={() => handleBuyNow(item)}
+                    >
                       Buy Now
                     </BuyNowButton>
                   </Grid>

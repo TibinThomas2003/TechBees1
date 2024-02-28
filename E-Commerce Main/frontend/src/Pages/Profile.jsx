@@ -58,10 +58,10 @@ function ProfilePage() {
   }
 
   return (
-    <Grid container justifyContent="center" style={{ marginTop: '50px' }}>
-      <Grid item xs={12} md={6}>
+    <Grid container justifyContent="center" style={{ marginTop: '30px' }}>
+      <Grid item xs={12} sm={8} md={6}>
         <Paper elevation={5} sx={{ padding: '20px', borderRadius: '10px' }}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h6" gutterBottom>
             User Profile
           </Typography>
           <form>

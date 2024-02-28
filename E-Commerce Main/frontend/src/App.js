@@ -22,6 +22,7 @@ import { AdminViewOrders } from "./Admin/AdminViewOrders";
 import ProfilePage from "./Pages/Profile";
 import { Contact } from "./Pages/Contact";
 import About from "./Pages/About";
+import Footer from "./Components/Navbar/Footer";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -131,15 +132,17 @@ function App() {
       />
     </>
   )}
-  {/* Redirect to login if not admin logged in */}
   <Route
     path="*"
     element={!isAdminLoggedIn ? <Navigate to="/login" /> : null}
   />
           </Routes>
       </div>
+      &nbsp;&nbsp;
+      <Footer />
     </Router>
   );
+
 }
 
 export default App;

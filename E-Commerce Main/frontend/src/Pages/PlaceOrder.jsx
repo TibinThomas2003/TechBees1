@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { Typography, TextField, Button, Grid, Card, CardMedia, Paper } from '@mui/material';
+import { Typography, TextField, Button, Grid, Card, CardMedia, Dialog, DialogTitle, DialogContent, DialogActions, Link } from '@mui/material';
 import { styled } from '@mui/system';
 
 const StyledContainer = styled(Grid)({
@@ -30,7 +30,7 @@ const StyledCardMedia = styled(CardMedia)({
   backgroundSize: 'contain',
 });
 
-const StyledPaper = styled(Paper)({
+const StyledDiv = styled('div')({
   padding: '20px',
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
 });
@@ -62,6 +62,8 @@ const PlaceOrder = () => {
 
   const [product, setProduct] = useState(null); // Define product state
   const [totalValue, setTotalValue] = useState(0); // State to hold the total value
+
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
 
   useEffect(() => {
     // Fetch current user details based on email stored in local storage
@@ -109,6 +111,14 @@ const PlaceOrder = () => {
     }
   }, [product, quantity]);
 
+  const handleConfirmationOpen = () => {
+    setConfirmationOpen(true);
+  };
+
+  const handleConfirmationClose = () => {
+    setConfirmationOpen(false);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -116,6 +126,15 @@ const PlaceOrder = () => {
         throw new Error('Please fill in all required fields');
       }
 
+      handleConfirmationOpen();
+    } catch (error) {
+      console.error('Error placing order:', error);
+      // You can handle errors such as displaying an error message to the user
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
       // Fetch product details
       const productResponse = await fetch(`http://localhost:5000/api/product/vieweachproduct/${id}`);
       if (!productResponse.ok) {
@@ -150,10 +169,13 @@ const PlaceOrder = () => {
         throw new Error('Failed to place order');
       }
       console.log('Order placed successfully');
-      // You can optionally redirect the user to a confirmation page or display a success message here
+      // Redirect to orders page
+      window.location.href = '/orders';
     } catch (error) {
       console.error('Error placing order:', error);
       // You can handle errors such as displaying an error message to the user
+    } finally {
+      handleConfirmationClose();
     }
   };
 
@@ -162,7 +184,7 @@ const PlaceOrder = () => {
       <Grid container spacing={3}>
         {/* Left Division - Product Details */}
         <Grid item xs={12} md={6}>
-          <StyledPaper elevation={3}>
+          <StyledDiv>
             <Typography variant="h4" align="center" gutterBottom>
               Place Your Order
             </Typography>
@@ -189,7 +211,7 @@ const PlaceOrder = () => {
                   Description: {product.description}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  Price: ${product.price}
+                  Price: ₹{product.price}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                   Quantity: {quantity}
@@ -197,13 +219,13 @@ const PlaceOrder = () => {
               </>
             )}
             <TotalValueBox>
-              Total Value: ${totalValue}
+              Total Value: {totalValue}
             </TotalValueBox>
-          </StyledPaper>
+          </StyledDiv>
         </Grid>
         {/* Right Division - Balance */}
         <Grid item xs={12} md={6}>
-          <StyledPaper elevation={3}>
+          <StyledDiv>
             <Typography variant="h6" gutterBottom>
               Order Details:
             </Typography>
@@ -264,14 +286,28 @@ const PlaceOrder = () => {
                   onChange={(e) => setAlternatePhoneNumber(e.target.value)}
                   defaultValue="Nil"
                 />
-                <StyledButton type="submit" variant="contained" color="primary" fullWidth>
+                <StyledButton type="button" onClick={handleConfirmationOpen} variant="contained" color="primary" fullWidth>
                   Place Order
                 </StyledButton>
               </StyledForm>
             )}
-          </StyledPaper>
+          </StyledDiv>
         </Grid>
       </Grid>
+      <Dialog open={confirmationOpen} onClose={handleConfirmationClose}>
+        <DialogTitle>Confirm Order</DialogTitle>
+        <DialogContent>
+          Are you sure you want to place this order?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmationClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handlePlaceOrder} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </StyledContainer>
   );
 };

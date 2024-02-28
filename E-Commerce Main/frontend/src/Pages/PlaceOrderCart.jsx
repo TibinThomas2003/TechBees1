@@ -2,33 +2,42 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const PlaceOrderCart = () => {
-  const [productIds, setProductIds] = useState([]);
-  const [productDetails, setProductDetails] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [productDetails, setProductDetails] = useState([]); // Define productDetails state variable
 
   useEffect(() => {
-    // Retrieve product IDs from local storage
-    const storedProductIds = localStorage.getItem('productIds');
-    if (storedProductIds) {
-      const parsedProductIds = JSON.parse(storedProductIds);
-      setProductIds(parsedProductIds);
+    const fetchCartItems = async () => {
+      try {
+        const userEmail = localStorage.getItem("userEmail");
+        const response = await axios.get(`http://localhost:5000/api/cart/cart/get-cart-items?email=${userEmail}`);
+        setCartItems(response.data);
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+      }
+    };
 
-      // Fetch product details for each product ID
-      const fetchProductDetails = async () => {
-        try {
-          const promises = parsedProductIds.map(async (productId) => {
-            const response = await axios.get(`http://localhost:5000/api/product/${productId}`);
+    fetchCartItems();
+  }, []);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        const productDetails = await Promise.all(
+          cartItems.map(async cartItem => {
+            const response = await axios.get(`http://localhost:5000/api/product/vieweachproduct/${cartItem.productId}`);
             return response.data;
-          });
-          const resolvedProductDetails = await Promise.all(promises);
-          setProductDetails(resolvedProductDetails);
-        } catch (error) {
-          console.error('Error fetching product details:', error);
-        }
-      };
+          })
+        );
+        setProductDetails(productDetails); // Update productDetails state
+      } catch (error) {
+        console.error('Error fetching product details:', error);
+      }
+    };
 
+    if (cartItems.length > 0) {
       fetchProductDetails();
     }
-  }, []);
+  }, [cartItems]);
 
   return (
     <div>
@@ -37,9 +46,15 @@ const PlaceOrderCart = () => {
       <ul>
         {productDetails.map(product => (
           <li key={product._id}>
-            <h3>{product.name}</h3>
-            <p>Description: {product.description}</p>
-            <p>Price: ${product.price}</p>
+            <div>
+              <strong>Name:</strong> {product.name}
+            </div>
+            <div>
+              <strong>Description:</strong> {product.description}
+            </div>
+            <div>
+              <strong>Price:</strong> {product.price}
+            </div>
             {/* Add more details as needed */}
           </li>
         ))}
