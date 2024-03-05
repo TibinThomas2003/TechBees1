@@ -20,15 +20,13 @@ import {
   ListItemAvatar,
   Avatar,
   ListItemText,
-  IconButton, // Import IconButton
+  IconButton,
 } from "@mui/material";
-import { AddShoppingCart } from "@mui/icons-material"; // Import AddShoppingCart icon
+import { AddShoppingCart } from "@mui/icons-material";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { styled } from "@mui/system";
 import axios from "axios";
-
-// Styled components
 
 const StyledBox = styled(Box)({
   display: "flex",
@@ -61,8 +59,6 @@ const AnimatedCard = styled(Card)({
     transform: "scale(1.05)",
   },
 });
-
-// ViewProduct component
 
 const ViewProduct = () => {
   const { id } = useParams();
@@ -151,7 +147,7 @@ const ViewProduct = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/feedback/feedback", // Update the URL with your backend endpoint
+        "http://localhost:5000/api/feedback/feedback",
         {
           productId: id,
           userEmail: userEmail,
@@ -161,15 +157,13 @@ const ViewProduct = () => {
 
       if (response.status === 201) {
         console.log("Feedback submitted successfully");
-        // Optionally, you can show a message to the user indicating successful submission
       } else {
         throw new Error("Failed to submit feedback");
       }
     } catch (error) {
       console.error("Error submitting feedback:", error);
-      // Optionally, you can show a message to the user indicating failure
     } finally {
-      setFeedback(""); // Clear the feedback field
+      setFeedback("");
     }
   };
 
@@ -228,7 +222,6 @@ const ViewProduct = () => {
                 {product.description.split(". ").map((sentence, index) => (
                   <span key={index}>
                     {index !== 0 && <br />}{" "}
-                    {/* Add line break except for the first sentence */}
                     &bull; {sentence.trim()}
                   </span>
                 ))}
@@ -237,56 +230,59 @@ const ViewProduct = () => {
               <Typography variant="body1" color="primary" gutterBottom>
                 Price: ₹{product.price}
               </Typography>
-              <Typography variant="body1" gutterBottom>
-                Stock: {product.stock}
-              </Typography>
               {product.stock === 0 ? (
                 <Typography variant="body1" color="error">
                   OUT OF STOCK
                 </Typography>
               ) : (
-                <Box display="flex" justifyContent="center" marginTop={2}>
-                  <FormControl>
-                    <Select
-                      value={quantity}
-                      onChange={(event) => setQuantity(event.target.value)}
+                userEmail ? (
+                  <Box display="flex" justifyContent="center" marginTop={2}>
+                    <FormControl>
+                      <Select
+                        value={quantity}
+                        onChange={(event) => setQuantity(event.target.value)}
+                      >
+                        {[...Array(10).keys()].map((val) => (
+                          <MenuItem key={val + 1} value={val + 1}>
+                            {val + 1}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      component={Link}
+                      to={{
+                        pathname: `/placeorder/${id}`,
+                        search: `?quantity=${quantity}`,
+                      }}
                     >
-                      {[...Array(10).keys()].map((val) => (
-                        <MenuItem key={val + 1} value={val + 1}>
-                          {val + 1}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    component={Link}
-                    to={{
-                      pathname: `/placeorder/${id}`,
-                      search: `?quantity=${quantity}`,
-                    }}
-                  >
-                    Buy Now
-                  </Button>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <IconButton
-                    color="secondary"
-                    aria-label="add to shopping cart"
-                    onClick={handleAddToCart}
-                    sx={{
-                      border: "2px solid #ccc", // Example border style
-                      borderRadius: "50%", // Example border radius to make it circular
-                      padding: "10px", // Example padding
-                      "&:hover": {
-                        borderColor: "#999", // Example border color on hover
-                      },
-                    }}
-                  >
-                    <AddShoppingCart />
-                  </IconButton>
-                </Box>
+                      Buy Now
+                    </Button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <IconButton
+                      color="secondary"
+                      aria-label="add to shopping cart"
+                      onClick={handleAddToCart}
+                      sx={{
+                        border: "2px solid #ccc",
+                        borderRadius: "50%",
+                        padding: "10px",
+                        "&:hover": {
+                          borderColor: "#999",
+                        },
+                      }}
+                    >
+                      <AddShoppingCart />
+                    </IconButton>
+                  </Box>
+                ) : (
+                  <Typography variant="body1" color="textSecondary" align="center">
+                   <Link to='/login'> Sign In to Continue</Link>
+                  </Typography>
+                )
               )}
             </CardContent>
           </AnimatedCard>

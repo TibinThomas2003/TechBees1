@@ -7,6 +7,7 @@ import {
   Grid,
   Card,
   CardMedia,
+  Paper,
 } from "@mui/material";
 import { styled } from "@mui/system";
 
@@ -26,6 +27,12 @@ const StyledTextField = styled(TextField)({
 const StyledDiv = styled("div")({
   padding: "20px",
   boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+});
+
+const StyledPaper = styled(Paper)({
+  padding: "20px",
+  marginBottom: "20px",
+  backgroundColor: "#f9f9f9",
 });
 
 const PlaceOrderCart = () => {
@@ -79,14 +86,14 @@ const PlaceOrderCart = () => {
 
   const handlePlaceOrder = async () => {
     try {
-      const customerName = document.getElementById('name').value;
-      const shippingAddress = document.getElementById('shipping-address').value;
-      const pincode = document.getElementById('pincode').value;
-      const phoneNumber = document.getElementById('phone-number').value;
-      const landmark = document.getElementById('landmark').value;
-      const alternatePhoneNumber = document.getElementById('alternate-phone').value;
-  
-      const orderItems = cartItems.map(item => ({
+      const customerName = document.getElementById("name").value;
+      const shippingAddress = document.getElementById("shipping-address").value;
+      const pincode = document.getElementById("pincode").value;
+      const phoneNumber = document.getElementById("phone-number").value;
+      const landmark = document.getElementById("landmark").value;
+      const alternatePhoneNumber = document.getElementById("alternate-phone").value;
+
+      const orderItems = cartItems.map((item) => ({
         productId: item.productId,
         customerName: customerName,
         shippingAddress: shippingAddress,
@@ -98,47 +105,46 @@ const PlaceOrderCart = () => {
         totalValue: item.quantity * item.price, // Calculate total value here
         productName: item.name,
         productDescription: item.description,
-        status: 'Order Placed'
+        status: "Order Placed",
       }));
-  
+
       const response = await axios.post(
-        'http://localhost:5000/api/orders/placeordercart',
+        "http://localhost:5000/api/orders/placeordercart",
         {
           userEmail: userEmail,
-          items: orderItems
+          items: orderItems,
         }
       );
-  
-      console.log('Order placed:', response.data);
+
+      console.log("Order placed:", response.data);
     } catch (error) {
-      console.error('Error placing order:', error);
+      console.error("Error placing order:", error);
     }
   };
-  
 
   return (
     <StyledContainer container justifyContent="center">
       <Grid container spacing={3}>
-        {/* Render product details and user details components */}
-        {productDetails.map((product, index) => (
-          <Grid item xs={12} key={index}>
-            <StyledDiv>
-              <Typography variant="h4" align="center" gutterBottom>
+        <Grid item xs={12} md={6}>
+        <Typography variant="h4" align="center" gutterBottom>
                 Place Your Order
               </Typography>
+               
               <Typography variant="h6" gutterBottom>
                 Product Details:
               </Typography>
-              <Card style={{ marginBottom: "20px", display: "flex" }}>
+          {productDetails.map((product, index) => (
+            <StyledPaper key={index} elevation={3}>
+             
+              <Card style={{ display: "flex" }}>
                 <CardMedia
                   component="img"
                   height="150"
                   width="auto"
                   image={product.image1}
                   alt={product.name}
-                  style={{ marginRight: "0px", objectFit: "contain" }}
+                  style={{ marginRight: "20px", objectFit: "contain" }}
                 />
-
                 <div>
                   <Typography variant="h6">{product.name}</Typography>
                   <Typography>
@@ -146,68 +152,52 @@ const PlaceOrderCart = () => {
                       ? `${product.description.substring(0, 50)}...`
                       : product.description}
                   </Typography>
-
                   <Typography style={{ color: "red" }}>
                     Price: {product.price}
                   </Typography>
                 </div>
               </Card>
-            </StyledDiv>
-          </Grid>
-        ))}
-      </Grid>
-      <Grid item xs={12}>
-        <StyledDiv>
-          <Typography variant="h6" gutterBottom>
-            User Details:
-          </Typography>
-          <StyledForm>
-            <StyledTextField
-              id="name"
-              label="Name"
-              variant="outlined"
-              fullWidth
-            />
-            <StyledTextField
-              id="shipping-address"
-              label="Shipping Address"
-              variant="outlined"
-              fullWidth
-            />
-            <StyledTextField
-              id="pincode"
-              label="Pincode"
-              variant="outlined"
-              fullWidth
-            />
-            <StyledTextField
-              id="phone-number"
-              label="Phone Number"
-              variant="outlined"
-              fullWidth
-            />
-            <StyledTextField
-              id="landmark"
-              label="Landmark"
-              variant="outlined"
-              fullWidth
-            />
-            <StyledTextField
-              id="alternate-phone"
-              label="Alternate Contact (Optional)"
-              variant="outlined"
-              fullWidth
-            />
-            <Button
-              onClick={handlePlaceOrder}
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
-              Place Order
-            </Button>
-          </StyledForm>
-        </StyledDiv>
+            </StyledPaper>
+          ))}
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <StyledDiv>
+            <Typography variant="h6" gutterBottom>
+              User Details:
+            </Typography>
+            <StyledForm>
+              <StyledTextField id="name" label="Name" variant="outlined" fullWidth />
+              <StyledTextField
+                id="shipping-address"
+                label="Shipping Address"
+                variant="outlined"
+                fullWidth
+              />
+              <StyledTextField id="pincode" label="Pincode" variant="outlined" fullWidth />
+              <StyledTextField
+                id="phone-number"
+                label="Phone Number"
+                variant="outlined"
+                fullWidth
+              />
+              <StyledTextField id="landmark" label="Landmark" variant="outlined" fullWidth />
+              <StyledTextField
+                id="alternate-phone"
+                label="Alternate Contact (Optional)"
+                variant="outlined"
+                fullWidth
+              />
+              <Button
+                onClick={handlePlaceOrder}
+                variant="contained"
+                color="primary"
+                fullWidth
+              >
+                Place Order
+              </Button>
+            </StyledForm>
+          </StyledDiv>
+        </Grid>
       </Grid>
     </StyledContainer>
   );

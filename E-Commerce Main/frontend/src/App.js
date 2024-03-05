@@ -64,6 +64,7 @@ function App() {
       setIsLoggedIn(false);
       setUserEmail("");
       setUserId(null); // Reset the user ID
+      window.location.href = '/login';
     } else {
       alert("Logout canceled. You are still logged in.");
     }

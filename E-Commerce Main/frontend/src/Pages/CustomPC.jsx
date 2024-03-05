@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaCartPlus } from 'react-icons/fa';
+import axios from 'axios'; // Import axios
+
+// Rest of the code remains the same
+
 
 const Container = styled.div`
   display: flex;
@@ -152,6 +156,19 @@ const CustomPC = () => {
       }
     });
   };
+  const handleProceedToPayment = async () => {
+    try {
+      const productIds = cartItems.map((item) => item._id);
+      console.log('Product IDs:', productIds); // Log product IDs to console
+      await axios.post('/api/custompc/placeorder', { productIds });
+      // Optionally, you can redirect the user to the payment page or show a success message
+      console.log('Order placed successfully!');
+    } catch (error) {
+      console.error('Error placing order:', error);
+    }
+  };
+  
+  
 
   return (
     <Container>
@@ -185,7 +202,7 @@ const CustomPC = () => {
         ))}
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <h3>Total Value: {IndianRupeeSymbol} {totalValue.toFixed(2)}</h3>
-          <button style={{ padding: '10px 20px', backgroundColor: '#3d5a80', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Proceed to Payment</button>
+          <button onClick={handleProceedToPayment} style={{ padding: '10px 20px', backgroundColor: '#3d5a80', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Proceed to Payment</button>
         </div>
       </DummyCartContainer>
     </Container>
