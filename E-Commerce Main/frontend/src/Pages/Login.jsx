@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../Components/Assets/logo.png';
+import logo from '../Components/Assets/bees.png';
 
 const Container = styled.div`
   max-width: 400px;
@@ -66,19 +66,20 @@ const Message = styled.div`
 `;
 
 const Image = styled.img`
-  max-width: 30%;
+  max-width: 100px;
   height: auto;
   border-radius: 50%;
-  border: 4px solid #007bff;
+  border: 3px solid #007bff; /* Adjust border color to match the theme */
   margin-bottom: 20px;
-  box-shadow: 1px 2px 4px #007bff,-1px -2px 4px #007bff;
-  transition : .5s ease;
-  &:hover { 
-    cursor: pointer;
-    transform : scale(0.95);
-    filter: invert();
+  filter: grayscale(20%); /* Add a slight grayscale effect for a modern look */
+  transition: filter 0.3s ease, transform 0.3s ease; /* Add transition for smoother effect on hover */
+
+  &:hover {
+    filter: grayscale(0%); /* Remove grayscale effect on hover */
+    transform: scale(1.05); /* Add slight scale-up effect on hover for a subtle interaction */
   }
 `;
+
 
 const Login = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();

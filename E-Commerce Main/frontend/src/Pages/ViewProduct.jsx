@@ -22,11 +22,12 @@ import {
   ListItemText,
   IconButton,
 } from "@mui/material";
-import { AddShoppingCart } from "@mui/icons-material";
+import { AddShoppingCart, Delete } from "@mui/icons-material";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { styled } from "@mui/system";
 import axios from "axios";
+import Rating from '@mui/material/Rating';
 
 const StyledBox = styled(Box)({
   display: "flex",
@@ -45,6 +46,9 @@ const ProductContainer = styled(Box)({
 
 const ProductImagesBox = styled(Box)({
   width: "50%",
+  "& .carousel-root .carousel .slide img": {
+    height: "300px", // Set a fixed height for the images
+  },
 });
 
 const ProductDetailsBox = styled(Box)({
@@ -67,6 +71,7 @@ const ViewProduct = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [feedback, setFeedback] = useState("");
+  const [rating, setRating] = useState(0);
   const [userEmail, setUserEmail] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
@@ -152,6 +157,7 @@ const ViewProduct = () => {
           productId: id,
           userEmail: userEmail,
           feedback: feedback,
+          rating: rating,
         }
       );
 
@@ -164,6 +170,21 @@ const ViewProduct = () => {
       console.error("Error submitting feedback:", error);
     } finally {
       setFeedback("");
+      setRating(0);
+    }
+  };
+
+  const handleDeleteFeedback = async (feedbackId) => {
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/feedback/feedback/${feedbackId}`);
+      if (response.status === 200) {
+        setFeedbacks((prevFeedbacks) => prevFeedbacks.filter((feedback) => feedback._id !== feedbackId));
+        console.log('Feedback deleted successfully');
+      } else {
+        throw new Error('Failed to delete feedback');
+      }
+    } catch (error) {
+      console.error('Error deleting feedback:', error);
     }
   };
 
@@ -303,10 +324,21 @@ const ViewProduct = () => {
             rows={4}
             margin="normal"
           />
-
-          <Button type="submit" variant="contained" color="primary">
+          {/* Add the Rating component here */}
+          <Box display="flex" alignItems="center" mt={2}>
+            <Typography variant="body1">Rating:</Typography>
+            <Rating
+              name="rating"
+              value={rating}
+              onChange={(event, newValue) => setRating(newValue)}
+            />
+          </Box>
+          <br />
+          <center>
+            <Button type="submit" variant="contained" color="primary">
             Submit Feedback
           </Button>
+          </center>
         </form>
       </Box>
       <Box mt={4} width="100%">
@@ -326,6 +358,9 @@ const ViewProduct = () => {
                 primary={feedback.userEmail}
                 secondary={feedback.feedback}
               />
+              <IconButton onClick={() => handleDeleteFeedback(feedback._id)}>
+                <Delete />
+              </IconButton>
             </ListItem>
           ))}
         </List>
