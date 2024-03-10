@@ -84,11 +84,12 @@ const ViewProducts = () => {
           <Typography variant="subtitle1">Explore and manage all products.</Typography>
         </header>
         <Container maxWidth="lg">
-          <Grid container spacing={3}>
-            {products.map((product) => (
-              <Grid item xs={12} sm={6} md={4} key={product._id}>
-                <Card elevation={3} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <CardContent>
+          {products.map((product) => (
+            <Grid container spacing={3} key={product._id}>
+              <Grid item xs={12} style={{ marginBottom: '20px' }}>
+                <Card elevation={3} sx={{ height: '100%', position: 'relative' }}>
+                  <img src={product.image1} alt={product.name} style={{ width: '150px',marginLeft:"20px", height: 'auto',marginTop:"20px", position: 'absolute', top: 0, left: 0 }} />
+                  <CardContent style={{ marginLeft: '220px' }}>
                     <Typography variant="h6" gutterBottom>
                       {product.name}
                     </Typography>
@@ -104,9 +105,8 @@ const ViewProducts = () => {
                     <Typography variant="body2" color="textSecondary" gutterBottom>
                       Stock: {product.stock}
                     </Typography>
-                    {product.image1 && <img src={product.image1} alt={product.name} style={{ maxWidth: '100%', height: 'auto' }} />}
                   </CardContent>
-                  <CardActions sx={{ marginTop: 'auto' }}>
+                  <CardActions sx={{ position: 'absolute', bottom: 0, right: 0 }}>
                     <Button
                       component={Link}
                       to={`/adminupdateproduct/${product._id}`}
@@ -141,8 +141,8 @@ const ViewProducts = () => {
                   </CardActions>
                 </Card>
               </Grid>
-            ))}
-          </Grid>
+            </Grid>
+          ))}
         </Container>
       </main>
     </div>

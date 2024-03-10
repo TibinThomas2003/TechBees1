@@ -23,6 +23,7 @@ import ProfilePage from "./Pages/Profile";
 import { Contact } from "./Pages/Contact";
 import About from "./Pages/About";
 import Footer from "./Components/Navbar/Footer";
+import PlaceOrderCustomPC from "./Pages/PlaceOrderCustomPC"; // Import the new component
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -100,6 +101,7 @@ function App() {
           <Route path="/viewcategory/:category" element={<ViewCategory />} />
           <Route path="/placeorder/:id" element={<PlaceOrder />} />
           <Route path="/placeordercart" element={<PlaceOrderCart />} />
+          <Route path="/placeordercustompc" component={PlaceOrderCustomPC} />
 
           {/* Protected admin routes */}
           {isAdminLoggedIn === "admin@gmail.com" && (

@@ -153,7 +153,7 @@ const PlaceOrderCart = () => {
                       : product.description}
                   </Typography>
                   <Typography style={{ color: "red" }}>
-                    Price: {product.price}
+                    Price: ₹ {product.price} 
                   </Typography>
                 </div>
               </Card>

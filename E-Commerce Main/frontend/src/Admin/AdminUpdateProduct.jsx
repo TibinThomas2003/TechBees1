@@ -113,6 +113,7 @@ const UpdateProduct = () => {
                     value={productData.category}
                     onChange={handleChange}
                     required
+                    disabled
                   />
                 </Grid>
                 <Grid item xs={12}>

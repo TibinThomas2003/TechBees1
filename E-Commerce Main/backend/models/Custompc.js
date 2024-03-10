@@ -1,14 +1,20 @@
 const mongoose = require('mongoose');
 
-const customOrderSchema = new mongoose.Schema({
-  products: {
-    type: [mongoose.Schema.Types.ObjectId],
+const CustomPCSchema = new mongoose.Schema({
+  name: {
+    type: String,
     required: true,
-    ref: 'Product', // Assuming your product model is named 'Product'
   },
-  // Other fields like user details, total value, etc., can be added here
-}, { timestamps: true });
+  category: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+});
 
-const CustomOrder = mongoose.model('CustomOrder', customOrderSchema);
+const CustomPC = mongoose.model('CustomPC', CustomPCSchema);
 
-module.exports = CustomOrder;
+module.exports = CustomPC;

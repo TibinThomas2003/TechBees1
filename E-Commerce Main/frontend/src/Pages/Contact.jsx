@@ -41,7 +41,7 @@ export const Contact = () => {
 
   return (
     <Container maxWidth="md" sx={{ mt: 5 }}>
-      <Typography variant="h2" align="center" gutterBottom>
+      <Typography variant="h4" align="center" gutterBottom>
         Get in Touch
       </Typography>
       <form onSubmit={handleSubmit}>

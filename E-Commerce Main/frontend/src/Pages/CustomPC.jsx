@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaCartPlus } from 'react-icons/fa';
-import axios from 'axios'; // Import axios
-
-// Rest of the code remains the same
-
+import axios from 'axios';
 
 const Container = styled.div`
   display: flex;
@@ -93,17 +90,17 @@ const CartItemDetails = styled.div`
   margin-top: 10px;
 `;
 
-const IndianRupeeSymbol = '\u20B9'; // Unicode for Indian Rupee symbol
+const IndianRupeeSymbol = '\u20B9';
 
-const CustomPC = () => {
+const CustomPC = ({ history }) => {
   const [categories] = useState([
-    "Processor",
-    "GPU",
-    "RAM",
-    "Storage",
-    "Motherboard",
-    "Power Unit",
-    "Case"
+    'Processor',
+    'GPU',
+    'RAM',
+    'Storage',
+    'Motherboard',
+    'Power Unit',
+    'Case',
   ]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -137,38 +134,39 @@ const CustomPC = () => {
     }
   };
 
-  const addToCart = (product) => {
-    setSelectedProduct((prevProduct) => {
-      if (prevProduct && prevProduct.category === product.category) {
-        return prevProduct;
-      } else {
-        return product;
-      }
-    });
-    setCartItems((prevItems) => {
-      const existingItemIndex = prevItems.findIndex((item) => item.category === product.category);
-      if (existingItemIndex !== -1) {
-        const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex] = product;
-        return updatedItems;
-      } else {
-        return [...prevItems, product];
-      }
-    });
-  };
-  const handleProceedToPayment = async () => {
+
+  const addToCart = async (product) => {
     try {
-      const productIds = cartItems.map((item) => item._id);
-      console.log('Product IDs:', productIds); // Log product IDs to console
-      await axios.post('/api/custompc/placeorder', { productIds });
-      // Optionally, you can redirect the user to the payment page or show a success message
-      console.log('Order placed successfully!');
+      // Make a request to add the product to the database
+      const response = await axios.post('http://localhost:5000/api/custompc/add', product);
+      if (response.status === 201) {
+        console.log('Product added to CustomPC model:', response.data);
+        // Update the cartItems state with the selected product
+        setCartItems([...cartItems, product]);
+      } else {
+        console.error('Failed to add product to CustomPC model:', response.data.message);
+        // Handle failure
+      }
     } catch (error) {
-      console.error('Error placing order:', error);
+      console.error('Error adding product to CustomPC model:', error);
+      // Handle error
     }
   };
   
-  
+
+  const handleProceedToPayment = async () => {
+    try {
+      if (cartItems.length > 0) {
+        const productIds = cartItems.map((item) => item._id);
+        console.log('Product IDs:', productIds);
+        window.location.href = `/placeordercustompc?productIds=${JSON.stringify(productIds)}`;
+      } else {
+        console.error('No products selected.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <Container>

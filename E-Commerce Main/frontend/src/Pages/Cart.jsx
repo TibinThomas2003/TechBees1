@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 import {
   Typography,
@@ -128,19 +128,23 @@ const Cart = ({ history }) => {
       <br />
       {cartItems.length > 0 && (
         <>
-          <center>
-            <Typography variant="h3">
+          <center style={{ backgroundColor: "#f0f0f0", padding: "10px" }}>
+            <Typography variant="h4">
               <strong>Subtotal:</strong> ₹{calculateSubtotal()}
             </Typography>
           </center>
-          <Button
-            variant="contained"
-            color="primary"
-            component={Link}
-            to="/placeordercart"
-          >
-            Proceed to Payment
-          </Button>
+
+          <br />
+          <center>
+            <Button
+              variant="contained"
+              color="primary"
+              component={Link}
+              to="/placeordercart"
+            >
+              Proceed to Payment
+            </Button>
+          </center>
         </>
       )}
 

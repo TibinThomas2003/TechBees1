@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { Typography, TextField, Button, Grid, Card, CardMedia, Dialog, DialogTitle, DialogContent, DialogActions, Link } from '@mui/material';
+import { Typography, TextField, Button, Grid, Card, CardMedia, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { styled } from '@mui/system';
 
 const StyledContainer = styled(Grid)({
@@ -219,7 +219,7 @@ const PlaceOrder = () => {
               </>
             )}
             <TotalValueBox>
-              Total Value: {totalValue}
+              Total Value: ₹ {totalValue}
             </TotalValueBox>
           </StyledDiv>
         </Grid>

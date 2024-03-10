@@ -28,7 +28,7 @@ const Footer = () => {
           </Grid>
         </Grid>
         <Typography variant="body2" style={{ marginTop: '20px', textAlign: 'center' }}>
-          &copy; {new Date().getFullYear()} Our PC Store. All rights reserved.
+          &copy; {new Date().getFullYear()} TechBees. All rights reserved.
         </Typography>
         <Typography variant="body2" style={{ textAlign: 'center' }}>
           For inquiries, please email us at admin@gmail.com or call +91 8138057448.

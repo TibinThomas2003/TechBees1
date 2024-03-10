@@ -24,11 +24,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.static('build'));
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.js')); 
-});
+app.use(express.static(path.join(__dirname, 'build'))); // Serve static files from the 'build' directory
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -61,6 +57,12 @@ app.use('/api/category', categoryRoute); // Use the category route
 // Route for feedback
 const feedbackRoute = require('./routes/feedback'); // Import the feedback route file
 app.use('/api/feedback', feedbackRoute); // Use the feedback route
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+});
 
 app.listen(port, () => {
     console.log(`Server is up and running on port ${port}`);
