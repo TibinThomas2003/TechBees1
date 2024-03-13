@@ -13,6 +13,14 @@ const CustomPCSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  userEmail: {
+    type: String,
+    required: true,
+  },
+  image1: {
+    type: String, // Assuming image1 is a URL
+    required: true,
+  },
 });
 
 const CustomPC = mongoose.model('CustomPC', CustomPCSchema);

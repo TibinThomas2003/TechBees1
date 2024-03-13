@@ -1,6 +1,6 @@
+// App.js
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import '@fortawesome/fontawesome-free/css/all.css';
 import Navbar from "./Components/Navbar/Navbar";
 import Home from "./Pages/Home";
 import Cart from "./Pages/Cart";
@@ -23,7 +23,8 @@ import ProfilePage from "./Pages/Profile";
 import { Contact } from "./Pages/Contact";
 import About from "./Pages/About";
 import Footer from "./Components/Navbar/Footer";
-import PlaceOrderCustomPC from "./Pages/PlaceOrderCustomPC"; // Import the new component
+import PlaceOrderCustomPC from "./Pages/PlaceOrderCustomPC";
+
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -101,7 +102,7 @@ function App() {
           <Route path="/viewcategory/:category" element={<ViewCategory />} />
           <Route path="/placeorder/:id" element={<PlaceOrder />} />
           <Route path="/placeordercart" element={<PlaceOrderCart />} />
-          <Route path="/placeordercustompc" component={PlaceOrderCustomPC} />
+          <Route path="custom/placeordercustompc" element={<PlaceOrderCustomPC />} />
 
           {/* Protected admin routes */}
           {isAdminLoggedIn === "admin@gmail.com" && (

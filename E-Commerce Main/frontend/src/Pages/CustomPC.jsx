@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaCartPlus } from 'react-icons/fa';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import PlaceOrderCustomPC from './PlaceOrderCustomPC';
 
 const Container = styled.div`
   display: flex;
@@ -92,6 +94,21 @@ const CartItemDetails = styled.div`
 
 const IndianRupeeSymbol = '\u20B9';
 
+// Added CSS for the Place Order button
+const PlaceOrderButton = styled.button`
+  background-color: #3d5a80;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #2a4365;
+  }
+`;
+
 const CustomPC = ({ history }) => {
   const [categories] = useState([
     'Processor',
@@ -107,12 +124,17 @@ const CustomPC = ({ history }) => {
   const [products, setProducts] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [totalValue, setTotalValue] = useState(0);
+  const userEmail = localStorage.getItem('userEmail'); // Retrieve userEmail from localStorage
 
   useEffect(() => {
     if (selectedCategory) {
       fetchProducts(selectedCategory);
     }
   }, [selectedCategory]);
+
+  useEffect(() => {
+    fetchCartItems(); // Fetch cart items when component mounts
+  }, []);
 
   useEffect(() => {
     const total = cartItems.reduce((accumulator, currentItem) => {
@@ -134,37 +156,35 @@ const CustomPC = ({ history }) => {
     }
   };
 
+  const fetchCartItems = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/custompc/cart?userEmail=${userEmail}`);
+      if (response.status === 200) {
+        setCartItems(response.data);
+      } else {
+        console.error('Failed to fetch cart items:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+    }
+  };
 
+  // Handle adding/updating product and refreshing the page
   const addToCart = async (product) => {
     try {
       // Make a request to add the product to the database
-      const response = await axios.post('http://localhost:5000/api/custompc/add', product);
-      if (response.status === 201) {
-        console.log('Product added to CustomPC model:', response.data);
-        // Update the cartItems state with the selected product
-        setCartItems([...cartItems, product]);
+      const response = await axios.post('http://localhost:5000/api/custompc/add', { ...product, userEmail });
+      if (response.status === 201 || response.status === 200) {
+        console.log('Product added/updated to CustomPC model:', response.data);
+        // Refresh the page to reflect changes in the dummy cart
+        window.location.reload();
       } else {
-        console.error('Failed to add product to CustomPC model:', response.data.message);
+        console.error('Failed to add/update product to CustomPC model:', response.data.message);
         // Handle failure
       }
     } catch (error) {
-      console.error('Error adding product to CustomPC model:', error);
+      console.error('Error adding/updating product to CustomPC model:', error);
       // Handle error
-    }
-  };
-  
-
-  const handleProceedToPayment = async () => {
-    try {
-      if (cartItems.length > 0) {
-        const productIds = cartItems.map((item) => item._id);
-        console.log('Product IDs:', productIds);
-        window.location.href = `/placeordercustompc?productIds=${JSON.stringify(productIds)}`;
-      } else {
-        console.error('No products selected.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
     }
   };
 
@@ -192,17 +212,23 @@ const CustomPC = ({ history }) => {
       </CategoriesContainer>
 
       <DummyCartContainer>
-        <CartTitle>Custom Cart</CartTitle>
-        {cartItems.map((item, index) => (
-          <CartItemDetails key={index}>
-            <CartCategoryName>{item.category} -</CartCategoryName> {item.name}
-          </CartItemDetails>
-        ))}
-        <div style={{ marginTop: '20px', textAlign: 'center' }}>
-          <h3>Total Value: {IndianRupeeSymbol} {totalValue.toFixed(2)}</h3>
-          <button onClick={handleProceedToPayment} style={{ padding: '10px 20px', backgroundColor: '#3d5a80', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Proceed to Payment</button>
-        </div>
-      </DummyCartContainer>
+      <CartTitle>Custom Cart</CartTitle>
+      {cartItems.map((item, index) => (
+        <CartItemDetails key={index}>
+          <div>
+            <center><img src={item.image1} alt={item.name} style={{ width: '50px', height: '60px', objectFit: 'contain' }} /></center>
+          </div>
+          <div>
+          <CartCategoryName>{item.category} -</CartCategoryName> {item.name}
+          </div>
+        </CartItemDetails>
+      ))}
+      <div style={{ marginTop: '20px', textAlign: 'center' }}>
+        <h3>Total Value: {IndianRupeeSymbol} {totalValue.toFixed(2)}</h3>
+        {/* Replaced plain button with styled PlaceOrderButton */}
+        <Link to="placeordercustompc"><PlaceOrderButton>Place Order</PlaceOrderButton></Link>
+      </div>
+    </DummyCartContainer>
     </Container>
   );
 };
