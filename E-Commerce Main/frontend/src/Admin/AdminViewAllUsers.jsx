@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from './SideBar';
+import profile from '../Components/Assets/profile_icon.jpg';
 import {
   Paper,
   Typography,
@@ -13,6 +14,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { border } from "@mui/system";
 
 // Header component
 const ViewAllUsersHeader = () => (
@@ -38,6 +40,8 @@ const ViewAllUsers = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchedUser, setSearchedUser] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -134,6 +138,16 @@ const ViewAllUsers = () => {
     }
   };
 
+  const handleSearchUser = (email) => {
+    const foundUser = users.find(user => user.email === email);
+    if (foundUser) {
+      setSearchedUser(foundUser);
+    } else {
+      setSearchedUser(null);
+      alert("User not found!");
+    }
+  };
+
   return (
     <div
       style={{ display: "flex", height: "100vh", backgroundColor: "#f9f9f9" }}
@@ -149,51 +163,63 @@ const ViewAllUsers = () => {
           padding: "20px",
           borderRadius: "8px",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+          position: "relative",
         }}
       >
         {/* Header */}
         <ViewAllUsersHeader />
 
+        {/* Search Input */}
+        <TextField
+          style={{ position: "absolute",width:"300px",height:"55px", top: "20px", right: "20px",backgroundColor:"white" 
+                  ,borderRadius:"5px", zIndex: 1, marginTop:"30px" , marginRight:"5px" }}
+          label="Search User"
+          variant="outlined"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearchUser(searchQuery);
+            }
+          }}
+        />
+        
         {/* Main content of ViewAllUsers component */}
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center" }}>
             <CircularProgress />
           </div>
         ) : (
-          users.map((user) => (
-            <Paper
-              key={user._id}
-              elevation={3}
-              style={{ margin: "20px", padding: "20px" }}
-            >
-              {/* Added key prop to the outermost div */}
-              <div key={user._id}>
+          <>
+            {searchedUser ? (
+              <Paper elevation={3} style={{ margin: "20px", padding: "20px" }}>
                 <Grid container spacing={2} alignItems="center">
                   <Grid item xs={12} sm={6}>
+                    
                     <Avatar
-                      alt={`${user.firstName} ${user.lastName}`} // Use backticks for interpolation
+                      alt={`${searchedUser.firstName} ${searchedUser.lastName}`} // Use backticks for interpolation
                       src="/static/images/avatar/1.jpg"
-                      sx={{ width: 100, height: 100, marginRight: 2 }}
+                      sx={{ width: 500, height: 100, marginRight: 2}}
                     />
                     <Typography variant="h5" gutterBottom>
-                      {user.name}
+                      {searchedUser.name}
                     </Typography>
                     <Typography variant="body1" gutterBottom>
-                      Email: {user.email}
+                      Email: {searchedUser.email}
                     </Typography>
                     <Typography variant="body1" gutterBottom>
-                      Address: {user.address}
+                      Address: {searchedUser.address}
                     </Typography>
                     <Typography variant="body1" gutterBottom>
-                      Pincode: {user.pincode}
+                      Pincode: {searchedUser.pincode}
                     </Typography>
                     <Typography variant="body1" gutterBottom>
-                      Landmark: {user.landmark}
+                      Landmark: {searchedUser.landmark}
                     </Typography>
                     <Typography variant="body1" gutterBottom>
-                      Phone Number: {user.phoneNumber}
+                      Phone Number: {searchedUser.phoneNumber}
                     </Typography>
-                    {user.email === "admin@gmail.com" && (
+                    {searchedUser.email === "admin@gmail.com" && (
                       <Typography
                         variant="body1"
                         gutterBottom
@@ -203,8 +229,8 @@ const ViewAllUsers = () => {
                       </Typography>
                     )}
                   </Grid>
-                  <Grid item xs={12} sm={6} container justifyContent="flex-end">
-                    {user.email === "admin@gmail.com" && (
+                  <Grid item  xs={12} sm={6} container justifyContent="flex-end">
+                    {searchedUser.email === "admin@gmail.com" && (
                       // Render update button for admin
                       <Button
                         variant="contained"
@@ -214,21 +240,91 @@ const ViewAllUsers = () => {
                         Update Password
                       </Button>
                     )}
-                    {user.email !== "admin@gmail.com" && (
+                    {searchedUser.email !== "admin@gmail.com" && (
                       // Render delete button for non-admin users
                       <Button
                         variant="contained"
                         color="secondary"
-                        onClick={() => handleDeleteUser(user._id)}
+                        onClick={() => handleDeleteUser(searchedUser._id)}
                       >
                         Delete
                       </Button>
                     )}
                   </Grid>
                 </Grid>
-              </div>
-            </Paper>
-          ))
+              </Paper>
+            ) : (
+              users.map((user) => (
+                <Paper
+                  key={user._id}
+                  elevation={3}
+                  style={{ margin: "20px", padding: "20px" }}
+                >
+                  {/* Added key prop to the outermost div */}
+                  <div key={user._id}>
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item xs={12} sm={6}>
+                        <Avatar style={{ border: `2px solid black` ,width: '80px', height:'80px'}}
+                          alt={`${user.firstName} ${user.lastName}`} // Use backticks for interpolation
+                          src={profile}
+                          sx={{ width: 100, height: 100, marginRight: 2 }}
+                        />
+                        <Typography variant="h5" gutterBottom>
+                          {user.name}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          Email: {user.email}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          Address: {user.address}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          Pincode: {user.pincode}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          Landmark: {user.landmark}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          Phone Number: {user.phoneNumber}
+                        </Typography>
+                        {user.email === "admin@gmail.com" && (
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            style={{ fontWeight: "bold", color: "green" }}
+                          >
+                            Role: Admin
+                          </Typography>
+                        )}
+                      </Grid>
+                      <Grid item xs={12} sm={6} container justifyContent="flex-end">
+                        {user.email === "admin@gmail.com" && (
+                          // Render update button for admin
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleUpdatePassword}
+                          >
+                            Update Password
+                          </Button>
+                        )}
+                        {user.email !== "admin@gmail.com" && (
+                          // Render delete button for non-admin users
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleDeleteUser(user._id)}
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </Grid>
+                    </Grid>
+                  </div>
+                </Paper>
+              ))
+            )}
+          </>
         )}
 
         {/* Update Password Dialog */}
@@ -273,3 +369,4 @@ const ViewAllUsers = () => {
 };
 
 export default ViewAllUsers;
+
