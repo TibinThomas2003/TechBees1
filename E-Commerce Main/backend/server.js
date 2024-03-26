@@ -50,6 +50,9 @@ app.use('/api/orders', orderRoute);
 const customPCRoute = require('./routes/custompc'); // Import the custom PC route file
 app.use('/api/custompc', customPCRoute); // Use the custom PC route
 
+const customPCOrderRoute = require('./routes/custompcorder'); // Import the custom PC order route file
+app.use('/api/custompcorder', customPCOrderRoute); // Use the custom PC order route
+
 // Route for categories
 const categoryRoute = require('./routes/category'); // Import the category route file
 app.use('/api/category', categoryRoute); // Use the category route

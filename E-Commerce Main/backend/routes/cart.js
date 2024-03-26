@@ -8,24 +8,33 @@ router.post('/add-to-cart', async (req, res) => {
   try {
     const { productId, name, price, description, image1, quantity, userEmail } = req.body;
 
-    const newItem = new CartItem({
-      productId,
-      name,
-      price,
-      description,
-      image1,
-      quantity,
-      userEmail,
-    });
+    // Check if the item already exists in the cart for the user
+    const existingCartItem = await CartItem.findOne({ productId, userEmail });
 
-    await newItem.save();
-
-    res.status(201).json({ message: 'Product added to cart successfully', item: newItem });
+    if (existingCartItem) {
+      // If the item exists, update the quantity
+      const updatedQuantity = existingCartItem.quantity + quantity;
+      await CartItem.findByIdAndUpdate(existingCartItem._id, { quantity: updatedQuantity });
+      res.status(200).json({ message: 'Quantity updated in cart successfully' });
+    } else {
+      // If the item does not exist, add it as a new item
+      const newItem = new CartItem({
+        productId,
+        name,
+        price,
+        description,
+        image1,
+        quantity,
+        userEmail,
+      });
+      await newItem.save();
+      res.status(201).json({ message: 'Product added to cart successfully', item: newItem });
+    }
   } catch (error) {
-    console.error('Error adding product to cart:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+  
   }
 });
+
 
 // Get cart items
 router.get('/cart/get-cart-items', async (req, res) => {
@@ -44,6 +53,11 @@ router.put('/update-quantity/:itemId', async (req, res) => {
   const { itemId } = req.params;
   const { quantity } = req.body;
   try {
+    // Check if the quantity is greater than 10
+    if (quantity > 5) {
+      return res.status(400).json({ error: 'Quantity cannot exceed 10' });
+    }
+    
     const updatedItem = await CartItem.findByIdAndUpdate(itemId, { quantity }, { new: true });
     res.status(200).json(updatedItem);
   } catch (error) {
@@ -51,6 +65,7 @@ router.put('/update-quantity/:itemId', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 // Delete an item from cart
 router.delete('/delete-item/:itemId', async (req, res) => {

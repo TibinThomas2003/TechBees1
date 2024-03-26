@@ -74,6 +74,9 @@ const Cart = ({ history }) => {
   }, []);
 
   const handleQuantityChange = async (itemId, newQuantity) => {
+    // Ensure the new quantity is within the range of 1 to 5
+    newQuantity = Math.min(Math.max(1, newQuantity), 5);
+  
     try {
       const response = await axios.put(
         `http://localhost:5000/api/cart/update-quantity/${itemId}`,
@@ -90,6 +93,7 @@ const Cart = ({ history }) => {
       console.error("Error updating quantity:", error);
     }
   };
+  
 
   const handleDelete = async (itemId) => {
     try {
@@ -118,10 +122,6 @@ const Cart = ({ history }) => {
       .toFixed(2);
   };
 
-  const handleProceedToPayment = () => {
-    // Add your logic here for proceeding to the payment page
-    console.log("Proceeding to payment...");
-  };
 
   return (
     <Container>
@@ -185,11 +185,9 @@ const Cart = ({ history }) => {
                     <Typography variant="body1">
                       <strong>Description:</strong> {item.description}
                     </Typography>
-                    <Typography variant="body1">
+                    <br />
+                    <Typography variant="body1" color="red">
                       <strong>Price:</strong> ₹{item.price}
-                    </Typography>
-                    <Typography variant="body1">
-                      <strong>User Email:</strong> {item.userEmail}
                     </Typography>
                     <br />
                     <BuyNowButton

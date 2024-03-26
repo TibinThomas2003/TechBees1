@@ -24,6 +24,7 @@ import { Contact } from "./Pages/Contact";
 import About from "./Pages/About";
 import Footer from "./Components/Navbar/Footer";
 import PlaceOrderCustomPC from "./Pages/PlaceOrderCustomPC";
+import  CustomOrders  from "./Pages/CustomOrders";
 
 
 function App() {
@@ -103,6 +104,8 @@ function App() {
           <Route path="/placeorder/:id" element={<PlaceOrder />} />
           <Route path="/placeordercart" element={<PlaceOrderCart />} />
           <Route path="custom/placeordercustompc" element={<PlaceOrderCustomPC />} />
+          <Route path="/customorder" element={<CustomOrders />} />
+
 
           {/* Protected admin routes */}
           {isAdminLoggedIn === "admin@gmail.com" && (

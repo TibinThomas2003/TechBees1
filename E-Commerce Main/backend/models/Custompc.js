@@ -13,12 +13,21 @@ const CustomPCSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  quantity: {
+    type: Number,
+    required: true,
+    default: 1,
+  },
   userEmail: {
     type: String,
     required: true,
   },
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
   image1: {
-    type: String, // Assuming image1 is a URL
+    type: String,
     required: true,
   },
 });

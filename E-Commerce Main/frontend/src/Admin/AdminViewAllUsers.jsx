@@ -14,7 +14,6 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { border } from "@mui/system";
 
 // Header component
 const ViewAllUsersHeader = () => (

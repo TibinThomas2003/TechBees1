@@ -1,4 +1,3 @@
-// components/Signup.jsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
@@ -81,8 +80,17 @@ const Signup = () => {
     phoneNumber: '',
   });
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:5000/api/auth/signup', {
@@ -98,12 +106,10 @@ const Signup = () => {
       if (response.ok) {
         console.log('Signup Successful:', data.user);
         alert('Signup Successful:', data.user);
-        // Redirect or perform any action on successful signup
         navigate('/login'); // Redirect to login page after successful signup
       } else {
         console.error('Error during signup:', data.error);
 
-        // Check if the error message indicates that the user already exists
         if (data.error.includes('User already exists')) {
           alert('User already exists. Please login or use a different email.');
         } else {
@@ -116,8 +122,38 @@ const Signup = () => {
     }
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const validateForm = () => {
+    if (
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword ||
+      !formData.name ||
+      !formData.address ||
+      !formData.pincode ||
+      !formData.landmark ||
+      !formData.phoneNumber
+    ) {
+      alert('Please fill in all fields');
+      return false;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match');
+      return false;
+    }
+
+    if (!/^\+91\d{10}$/.test(formData.phoneNumber)) {
+      alert('Phone number should start with +91 and be followed by 10 digits.');
+      return false;
+    }
+    
+
+    if (!/^\d{5}$/.test(formData.pincode)) {
+      alert('Pincode should contain exactly 5 digits.');
+      return false;
+    }
+
+    return true;
   };
 
   return (

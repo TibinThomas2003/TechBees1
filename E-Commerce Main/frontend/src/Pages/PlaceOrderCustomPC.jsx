@@ -1,3 +1,4 @@
+// PlaceOrderCustomPC.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -10,7 +11,7 @@ import {
   Paper,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { red } from "@mui/material/colors";
+import { Link } from 'react-router-dom';
 
 const StyledContainer = styled(Grid)({
   padding: "20px",
@@ -39,7 +40,7 @@ const StyledPaper = styled(Paper)({
 const StyledCard = styled(Card)({
   display: "flex",
   marginBottom: "20px",
-  height: "75px",
+  height: "100px",
   objectFit: "contain",
   transition: "transform 0.3s ease",
   "&:hover": {
@@ -103,36 +104,44 @@ const PlaceOrderCustomPC = () => {
     });
   };
 
-  const handlePlaceOrder = async () => {
-    try {
-      const orderItems = productDetails.map((product) => ({
+const handlePlaceOrder = async () => {
+  try {
+    const orderItems = productDetails.map((product) => {
+      // Include null checks to ensure properties are defined
+      const productName = product.name ? product.name.substring(0, 60) : "";
+      const productCategory = product.category ? product.category.substring(0, 20) : "";
+      const productDescription = product.description ? product.description.substring(0, 50) : "";
+
+      return {
         productId: product._id,
         ...customerDetails,
         quantity: product.quantity,
         totalValue: product.price * product.quantity,
-        productName: product.name.substring(0, 60), // Limiting name to 60 characters
-        productCategory: product.category.substring(0, 20), // Limiting category to 20 characters
+        productName,
+        productCategory,
         productPrice: product.price,
-        productDescription: product.description.substring(0, 50), // Limiting description to 50 characters
+        productDescription,
         status: "Order Placed",
-      }));
+      };
+    });
 
-      const response = await axios.post(
-        "http://localhost:5000/api/orders/placeordercart",
-        {
-          items: orderItems,
-        }
-      );
+    const response = await axios.post(
+      "http://localhost:5000/api/custompcorder/placeordercustompc",
+      {
+        items: orderItems,
+      }
+    );
 
-      console.log("Order placed:", response.data);
-    } catch (error) {
-      console.error("Error placing order:", error);
-    }
-  };
+    console.log("Order placed:", response.data);
+  } catch (error) {
+    console.error("Error placing order:", error);
+  }
+};
+
 
   // Calculate total value
   const totalValue = productDetails.reduce(
-    (total, product) => total + product.price,
+    (total, product) => total + product.price * product.quantity,
     0
   );
 
@@ -162,15 +171,17 @@ const PlaceOrderCustomPC = () => {
                   <StyledCardContent>
                     <div>
                       <Typography variant="body1">
-                        {product.name.substring(0, 60)}.... {/* Limiting name to 60 characters */}
+                        {product.name.substring(0, 60)}....{" "}
                       </Typography>
                       <Typography variant="body2">
-                        Category: {product.category.substring(0, 20)} {/* Limiting category to 20 characters */}
+                        Category: {product.category.substring(0, 20)}{" "}
                       </Typography>
                       <Typography variant="body2" color="red">
                         Price: ₹ {product.price}
                       </Typography>
-                      {/* Display other product details */}
+                      <Typography variant="body2" color="orange">
+                        Quantity: {product.quantity}
+                      </Typography>
                     </div>
                   </StyledCardContent>
                 </StyledCard>
@@ -193,16 +204,6 @@ const PlaceOrderCustomPC = () => {
                 fullWidth
                 required
                 onChange={handleInputChange}
-              />
-              <StyledTextField
-                type="email"
-                id="email"
-                name="email"
-                label="Email"
-                variant="outlined"
-                fullWidth
-                value={customerDetails.email}
-                disabled
               />
               <StyledTextField
                 type="text"
@@ -254,6 +255,7 @@ const PlaceOrderCustomPC = () => {
                 onChange={handleInputChange}
               />
             </StyledForm>
+            <Link to="/customorder">
             <Button
               variant="contained"
               color="primary"
@@ -262,6 +264,7 @@ const PlaceOrderCustomPC = () => {
             >
               Place Order
             </Button>
+            </Link>
           </StyledDiv>
         </Grid>
       </Grid>

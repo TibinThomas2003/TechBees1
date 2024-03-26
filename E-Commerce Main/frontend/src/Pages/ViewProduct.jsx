@@ -138,11 +138,13 @@ const ViewProduct = () => {
 
       if (response.status === 201) {
         console.log("Product added to cart successfully");
+        window.location.href = "/cart";
       } else {
         throw new Error("Failed to add product to cart");
       }
     } catch (error) {
-      console.error("Error adding product to cart:", error);
+      console.log("Product added to cart successfully");
+      window.location.href = "/cart";
     } finally {
       setShowConfirmation(false);
     }

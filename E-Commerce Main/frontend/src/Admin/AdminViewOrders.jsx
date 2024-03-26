@@ -216,6 +216,7 @@ export const AdminViewOrders = () => {
               <OrderStatus status={order.status}>{order.status}</OrderStatus>
             </OrderHeader>
             <OrderDetail>Customer Name: {order.customerName}</OrderDetail>
+            <OrderDetail>Product ID: {order.productId}</OrderDetail>
             <OrderDetail>Shipping Address: {order.shippingAddress}</OrderDetail>
             <OrderDetail>Phone Number: {order.phoneNumber}</OrderDetail>
             <OrderDetail>Total Price: ${order.totalValue}</OrderDetail>
